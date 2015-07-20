@@ -102,6 +102,16 @@
     <Compile Include="VideoPanel.Designer.cs">
       <DependentUpon>VideoPanel.cs</DependentUpon>
     </Compile>
+    <Content Include="Content\angelClock.png" />
+    <Content Include="Content\angelClock1.png" />
+    <Content Include="Content\angelClock2.png" />
+    <Content Include="Content\angelClock3.png" />
+    <Content Include="Content\angelClock_.png" />
+    <Content Include="Content\devilClock.png" />
+    <Content Include="Content\devilClock1.png" />
+    <Content Include="Content\devilClock2.png" />
+    <Content Include="Content\devilClock3.png" />
+    <Content Include="Content\devilClock_.png" />
     <Content Include="Content\WoodFine.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -179,6 +189,9 @@
       <Link>Content\DepthAndColorFloatVS.cso</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="VideoPanel.resx">
+      <DependentUpon>VideoPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
