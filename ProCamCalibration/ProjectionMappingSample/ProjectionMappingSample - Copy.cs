@@ -18,8 +18,6 @@ namespace RoomAliveToolkit
         private int framesInMemory = 1000;
         public event FeedbackChangedHandler FeedbackChanged;
         public delegate void FeedbackChangedHandler(int feedback, double headX, double headY);
-        public event BodyAmountCounterHandler BodyAmountCounted;
-        public delegate void BodyAmountCounterHandler(int bodyCount);
         public event SkeletonDrawingHandler SkeletonDrawing;
         public delegate void SkeletonDrawingHandler(Kinect2SBody body, PostureFrame postureFrame);
 
@@ -192,14 +190,12 @@ namespace RoomAliveToolkit
 
             userViewForm.videoPanel1.MouseClick += videoPanel1_MouseClick;
 
-            // hack
             foreach (ProjectorForm form in this.projectorForms)
             {
                 MainForm mainForm = userViewForm as MainForm;
                 mainForm.VisibilityChanged += form.On_VisibilityChanged;
                 mainForm.ImageChanged += form.On_ImageChanged;
                 this.FeedbackChanged += form.On_FeedbackChanged;
-                this.BodyAmountCounted += form.On_BodyAmountCounted;
                 this.SkeletonDrawing += form.On_SkeletonDrawing;
                 //this.kinectServer.BodyFrameArrived += form.On_BodyFrameArrived;
             }
@@ -236,7 +232,6 @@ namespace RoomAliveToolkit
             }
 
             currentBodyCount = serializableBodyFrame.Bodies.Count;
-            this.BodyAmountCounted(currentBodyCount);
 
             foreach (Kinect2SBody body in serializableBodyFrame.Bodies)
             {

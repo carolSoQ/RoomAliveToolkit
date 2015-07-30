@@ -149,13 +149,11 @@
             base.OnPaint(e);
 
             System.Drawing.Bitmap image = new System.Drawing.Bitmap("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\spot_deep_eyes.png", false);
-            e.Graphics.DrawImage(image, 60, 60);
+            e.Graphics.DrawImage(image, 300, 300);
         }
 
         public void On_BodyAmountCounted(int bodyAmount)
         {
-            string text = Convert.ToString(bodyAmount);
-            this.label3.BeginInvoke((new Action(() => this.label3.Text = text)));
         }
 
         public void On_FeedbackChanged(int feedbackType, double headX, double headY)
