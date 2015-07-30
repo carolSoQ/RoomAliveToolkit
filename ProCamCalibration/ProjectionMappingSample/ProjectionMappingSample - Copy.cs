@@ -16,7 +16,6 @@ namespace RoomAliveToolkit
     public class ProjectionMappingSample : ApplicationContext
     {
         private int framesInMemory = 1000;
-        private int frameCounter = 0;
         public event FeedbackChangedHandler FeedbackChanged;
         public delegate void FeedbackChangedHandler(int feedback, double headX, double headY);
         public event BodyAmountCounterHandler BodyAmountCounted;
@@ -260,8 +259,6 @@ namespace RoomAliveToolkit
                     this.userPostureFrames[trackingId].RemoveAt(0);
                 }
 
-           
-
                 this.userPostureFrames[trackingId].Add(postureFrame);
 
                 a = Math.Abs(body.Joints[JointType.FootLeft].CameraSpacePoint.Y - body.Joints[JointType.FootRight].CameraSpacePoint.Y);
@@ -308,8 +305,9 @@ namespace RoomAliveToolkit
                     postureFrame.Postures.Add(Posture.Distance);
                 }
 
-                // posture feedback                
-                if (this.frameCounter >= 60 && this.frameCounter % 60 == 0)
+                // posture feedback
+                int frameCount = this.userPostureFrames[trackingId].Count;
+                if (frameCount >= 60 && frameCount % 60 == 0)
                 {
                     int legCount = 0;
                     int slouchCount = 0;
@@ -317,8 +315,6 @@ namespace RoomAliveToolkit
                     int shortDistanceCount = 0;
                     bool projectionStandard = true;
                     bool mobileGood = true;
-
-                    int frameCount = this.userPostureFrames[trackingId].Count;
 
                     for (int p = frameCount - 60; p < frameCount; p++)
                     {
@@ -379,7 +375,7 @@ namespace RoomAliveToolkit
                         if (this.userPostureFrames.Count >= 30 * 30)
                         {
                             int q = 0;
-                            if (findSamePosture(armRegion, trackingId)||findSamePosture(legRegion, trackingId)
+                            if (findSamePosture(armRegion, trackingId) || findSamePosture(legRegion, trackingId)
                                 || findSamePosture(trunkRegion, trackingId) || findSamePosture(headRegion, trackingId))
                             {
                                 if (findSamePosture(armRegion, trackingId))
@@ -423,7 +419,7 @@ namespace RoomAliveToolkit
                             feedback = PostureFeedback.Standard;
                             this.FeedbackChanged(4, headX, headY);
                         }
-                    }             
+                    }
                     //if (mobileGood)
                     //{
                     //    if (o >= 30 * 30)
@@ -442,16 +438,12 @@ namespace RoomAliveToolkit
                     //        userIsGood[body.TrackingId][o / 60] = true;
                     //    }
                     //}
-
-
                 }
-
-                this.frameCounter++;
             }
         }
 
-            
-        
+
+
 
         private List<Dictionary<JointType, CameraSpacePoint>> jointsHistory = new List<Dictionary<JointType, CameraSpacePoint>>();
         private void getPostureDuration(List<JointType> jtList, Kinect2SBody body)

@@ -154,29 +154,8 @@
 
         public void On_BodyAmountCounted(int bodyAmount)
         {
-            switch (bodyAmount)
-            {
-                case 1:
-                    {
-                        label3.Text = "1";
-                    }
-                    break;
-                case 2:
-                    {
-                        label3.Text = "2";
-                    }
-                    break;
-                case 3:
-                    {
-                        label3.Text = "3";
-                    }
-                    break;
-                default:
-                    {
-                        label3.Text = "?";
-                    }
-                    break;
-            }
+            string text = Convert.ToString(bodyAmount);
+            this.label3.BeginInvoke((new Action(() => this.label3.Text = text)));
         }
 
         public void On_FeedbackChanged(int feedbackType, double headX, double headY)
