@@ -61,7 +61,7 @@ namespace RoomAliveToolkit
         public override void Write(string format, params object[] arg) { this.WriteLine(string.Format(format, arg)); }
         public override void Write(uint value) { this.WriteLine(value.ToString()); }
         public override void Write(ulong value) { this.WriteLine(value.ToString()); }
-        public override void Write(object value) { this.WriteLine(value.ToString()); }
+        //public override void Write(object value) { this.WriteLine(value.ToString()); }
         public override void WriteLine() { this.Write(Environment.NewLine); }
         public override void WriteLine(bool value) { this.WriteLine(value.ToString()); }
         public override void WriteLine(char value) { this.WriteLine(value.ToString()); }

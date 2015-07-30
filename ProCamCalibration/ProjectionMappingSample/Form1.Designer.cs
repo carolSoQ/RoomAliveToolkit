@@ -28,24 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.videoPanel1 = new RoomAliveToolkit.VideoPanel();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.SuspendLayout();
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Location = new System.Drawing.Point(-23, -46);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(100, 50);
-            this.pictureBox1.TabIndex = 1;
-            this.pictureBox1.TabStop = false;
             // 
             // pictureBox2
             // 
@@ -53,7 +44,7 @@
             this.pictureBox2.ImageLocation = "H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\a" +
     "ngelClock.png";
             this.pictureBox2.InitialImage = null;
-            this.pictureBox2.Location = new System.Drawing.Point(621, 580);
+            this.pictureBox2.Location = new System.Drawing.Point(621, 657);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(565, 655);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -66,7 +57,7 @@
             this.pictureBox3.BackColor = System.Drawing.Color.Black;
             this.pictureBox3.ImageLocation = "H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\d" +
     "evilClock.png";
-            this.pictureBox3.Location = new System.Drawing.Point(-52, 612);
+            this.pictureBox3.Location = new System.Drawing.Point(77, 602);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(706, 710);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -80,7 +71,7 @@
             this.label1.BackColor = System.Drawing.Color.Black;
             this.label1.Font = new System.Drawing.Font("Trebuchet MS", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label1.Location = new System.Drawing.Point(115, 630);
+            this.label1.Location = new System.Drawing.Point(262, 630);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(195, 81);
             this.label1.TabIndex = 4;
@@ -112,21 +103,33 @@
             this.videoPanel1.TabIndex = 0;
             this.videoPanel1.SizeChanged += new System.EventHandler(this.videoPanel1_SizeChanged);
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.BackColor = System.Drawing.Color.Black;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 72F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.CadetBlue;
+            this.label3.Location = new System.Drawing.Point(413, 163);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(516, 108);
+            this.label3.TabIndex = 6;
+            this.label3.Text = "bodyCount";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
             this.ClientSize = new System.Drawing.Size(1384, 1011);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox3);
             this.Controls.Add(this.pictureBox2);
-            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.videoPanel1);
             this.Name = "Form1";
             this.Text = "Form1";
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             this.ResumeLayout(false);
@@ -137,11 +140,11 @@
         #endregion
 
         public VideoPanel videoPanel1;
-        private System.Windows.Forms.PictureBox pictureBox1;
         public System.Windows.Forms.PictureBox pictureBox3;
         public System.Windows.Forms.PictureBox pictureBox2;
         public System.Windows.Forms.Label label1;
         public System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
 
     }
 }

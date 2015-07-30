@@ -8,11 +8,93 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using Microsoft.Kinect;
+using Kinect2Serializer;
+using Kinect2SimpleServer;
 
 namespace RoomAliveToolkit
 {
     public class ProjectionMappingSample : ApplicationContext
     {
+        private int framesInMemory = 1000;
+        private int frameCounter = 0;
+        public event FeedbackChangedHandler FeedbackChanged;
+        public delegate void FeedbackChangedHandler(int feedback, double headX, double headY);
+        public event BodyAmountCounterHandler BodyAmountCounted;
+        public delegate void BodyAmountCounterHandler(int bodyCount);
+        public event SkeletonDrawingHandler SkeletonDrawing;
+        public delegate void SkeletonDrawingHandler(Kinect2SBody body, PostureFrame postureFrame);
+
+        public enum Posture
+        {
+            Leg, Slouch, Height, Distance
+        }
+
+        public class PostureFrame
+        {
+            private HashSet<Posture> postures = new HashSet<Posture>();
+            public HashSet<Posture> Postures
+            {
+                get
+                {
+                    return this.postures;
+                }
+            }
+
+            private Dictionary<JointType, CameraSpacePoint> joints = new Dictionary<JointType, CameraSpacePoint>();
+            public Dictionary<JointType, CameraSpacePoint> Joints
+            {
+                get
+                {
+                    return this.joints;
+                }
+            }
+        }
+
+        public enum PostureFeedback
+        {
+            LegCrossed, Slouch, ShortDistance, Standard, BodyStationary, HeadStationary, ArmStationary, LegStationary, LowHeight
+        }
+        //1 2 3 4 5 6 7 8
+        Dictionary<ulong, List<PostureFrame>> userPostureFrames = new Dictionary<ulong, List<PostureFrame>>();
+
+        Dictionary<ulong, bool[]> userIsLowHeight = new Dictionary<ulong, bool[]>();
+        Dictionary<ulong, bool[]> userIsGood = new Dictionary<ulong, bool[]>();
+
+        List<ulong> idList = new List<ulong>();
+        int o = 0;
+        double a;
+        double b;
+        double c;
+        double d;
+        double e;
+        double f;
+        double g;
+        double h;
+        double i;
+        double j;
+        double k;
+        double l;
+        double m;
+        double n;
+        double aCriteria = 0.075;
+        double bCriteria = 0;
+        double cCriteria = -0.5;
+        double dCriteria = -0.5;
+        double eCriteria = 0;
+        double fCriteria = 0.05;
+        double gCriteria = 0.2;
+        double hCriteria = 0.131;
+        double iCriteria = 0.331;
+        double kkCriteria = -0.052;
+        double lCriteria = -0.052;
+        double mCriteria = 2;
+        double nCriteria = 0.04;
+        private List<JointType> headRegion = new List<JointType>() { JointType.Head, JointType.Neck };
+        private List<JointType> armRegion = new List<JointType>() { JointType.ShoulderLeft, JointType.ElbowLeft, JointType.WristLeft, JointType.HandLeft, JointType.ShoulderRight, JointType.ElbowRight, JointType.WristRight, JointType.HandRight };
+        private List<JointType> trunkRegion = new List<JointType>() { JointType.ShoulderLeft, JointType.ShoulderRight, JointType.SpineShoulder, JointType.SpineBase, JointType.SpineMid };
+        private List<JointType> legRegion = new List<JointType>() { JointType.KneeLeft, JointType.HipLeft, JointType.AnkleLeft, JointType.FootLeft, JointType.KneeRight, JointType.HipRight, JointType.AnkleRight, JointType.FootRight };
+        private Kinect2SimpleServer.Kinect2SimpleServer kinectServer;
+
         [STAThread]
         static void Main(string[] args)
         {
@@ -21,6 +103,11 @@ namespace RoomAliveToolkit
 
         public ProjectionMappingSample(string[] args)
         {
+            // kinect server
+            this.kinectServer = new Kinect2SimpleServer.Kinect2SimpleServer(8000);
+            this.kinectServer.BodyFrameReceived += kinectServer_BodyFrameReceived;
+            this.kinectServer.Start();
+
             // load ensemble.xml
             string path = args[0];
             string directory = Path.GetDirectoryName(path);
@@ -97,7 +184,7 @@ namespace RoomAliveToolkit
             }
 
             // example 3d object
-            var mesh = Mesh.FromOBJFile("Content/FloorPlan.obj");
+            var mesh = Mesh.FromOBJFile("Content/d1.obj");
             meshDeviceResources = new MeshDeviceResources(device, imagingFactory, mesh);
 
             userViewForm = new MainForm(factory, device, renderLock);
@@ -111,7 +198,11 @@ namespace RoomAliveToolkit
             {
                 MainForm mainForm = userViewForm as MainForm;
                 mainForm.VisibilityChanged += form.On_VisibilityChanged;
-                mainForm.ImageChanged += form.On_ImageChanged;        
+                mainForm.ImageChanged += form.On_ImageChanged;
+                this.FeedbackChanged += form.On_FeedbackChanged;
+                this.BodyAmountCounted += form.On_BodyAmountCounted;
+                this.SkeletonDrawing += form.On_SkeletonDrawing;
+                //this.kinectServer.BodyFrameArrived += form.On_BodyFrameArrived;
             }
 
             // connect to local camera to acquire head position
@@ -134,6 +225,291 @@ namespace RoomAliveToolkit
 
             new System.Threading.Thread(RenderLoop).Start();
         }
+        PostureFeedback feedback = PostureFeedback.Standard;
+        int feedbackType;
+        int currentBodyCount;
+        private void kinectServer_BodyFrameReceived(Kinect2SBodyFrame serializableBodyFrame)
+        {
+            if (serializableBodyFrame.Bodies.Count == 0)
+            {
+                // ignore
+                return;
+            }
+
+            currentBodyCount = serializableBodyFrame.Bodies.Count;
+            this.BodyAmountCounted(currentBodyCount);
+
+            foreach (Kinect2SBody body in serializableBodyFrame.Bodies)
+            {
+                ulong trackingId = body.TrackingId;
+                PostureFrame postureFrame = new PostureFrame();
+                this.SkeletonDrawing(body, postureFrame);
+
+                foreach (Kinect2SJoint joint in body.Joints.Values)
+                {
+                    postureFrame.Joints[joint.JointType] = joint.CameraSpacePoint;
+                }
+
+                if (!this.userPostureFrames.ContainsKey(body.TrackingId))
+                {
+                    this.userPostureFrames[trackingId] = new List<PostureFrame>(this.framesInMemory);
+                }
+
+                if (this.userPostureFrames[trackingId].Count == this.framesInMemory)
+                {
+                    this.userPostureFrames[trackingId].RemoveAt(0);
+                }
+
+           
+
+                this.userPostureFrames[trackingId].Add(postureFrame);
+
+                a = Math.Abs(body.Joints[JointType.FootLeft].CameraSpacePoint.Y - body.Joints[JointType.FootRight].CameraSpacePoint.Y);
+                b = body.Joints[JointType.KneeLeft].CameraSpacePoint.Y;
+                c = body.Joints[JointType.FootLeft].CameraSpacePoint.Y;
+                d = body.Joints[JointType.FootRight].CameraSpacePoint.Y;
+                e = body.Joints[JointType.KneeRight].CameraSpacePoint.Y;
+                //back 
+                f = body.Joints[JointType.SpineMid].CameraSpacePoint.Z - body.Joints[JointType.SpineBase].CameraSpacePoint.Z;
+                g = body.Joints[JointType.SpineShoulder].CameraSpacePoint.Y - body.Joints[JointType.SpineBase].CameraSpacePoint.Y;
+                h = Math.Sqrt((body.Joints[JointType.SpineMid].CameraSpacePoint.Z - body.Joints[JointType.SpineBase].CameraSpacePoint.Z)
+                         * (body.Joints[JointType.SpineMid].CameraSpacePoint.Z - body.Joints[JointType.SpineBase].CameraSpacePoint.Z)
+                         + (body.Joints[JointType.SpineMid].CameraSpacePoint.X - body.Joints[JointType.SpineBase].CameraSpacePoint.X)
+                         * (body.Joints[JointType.SpineMid].CameraSpacePoint.X - body.Joints[JointType.SpineBase].CameraSpacePoint.X));
+                i = body.Joints[JointType.SpineShoulder].CameraSpacePoint.Y - body.Joints[JointType.SpineBase].CameraSpacePoint.Y;
+                k = body.Joints[JointType.SpineShoulder].CameraSpacePoint.Z - 2 * body.Joints[JointType.SpineMid].CameraSpacePoint.Z
+                         + body.Joints[JointType.SpineBase].CameraSpacePoint.Z;
+                l = body.Joints[JointType.SpineShoulder].CameraSpacePoint.Y - 2 * body.Joints[JointType.SpineMid].CameraSpacePoint.Y
+                         + body.Joints[JointType.SpineBase].CameraSpacePoint.Y;
+                //height
+                n = Math.Sqrt((body.Joints[JointType.Neck].CameraSpacePoint.Z - body.Joints[JointType.Head].CameraSpacePoint.Z)
+                         * (body.Joints[JointType.Neck].CameraSpacePoint.Z - body.Joints[JointType.Head].CameraSpacePoint.Z)
+                         + (body.Joints[JointType.Neck].CameraSpacePoint.X - body.Joints[JointType.Head].CameraSpacePoint.X)
+                         * (body.Joints[JointType.Neck].CameraSpacePoint.X - body.Joints[JointType.Head].CameraSpacePoint.X));
+                //distance
+                m = body.Joints[JointType.Head].CameraSpacePoint.Z;
+                double headX = body.Joints[JointType.Head].CameraSpacePoint.X;
+                double headY = body.Joints[JointType.Head].CameraSpacePoint.Y;
+
+                if (a > aCriteria || ((d > dCriteria || c > cCriteria) && !(b > bCriteria && e > eCriteria)))
+                {
+                    postureFrame.Postures.Add(Posture.Leg);
+                }
+                if (k < kkCriteria || l > lCriteria || (h > hCriteria && f > fCriteria) || (i < iCriteria && g > gCriteria))
+                {
+                    postureFrame.Postures.Add(Posture.Slouch);
+                }
+                if (!(n < nCriteria))
+                {
+                    postureFrame.Postures.Add(Posture.Height);
+                }
+                if (m < mCriteria)
+                {
+                    postureFrame.Postures.Add(Posture.Distance);
+                }
+
+                // posture feedback                
+                if (this.frameCounter >= 60 && this.frameCounter % 60 == 0)
+                {
+                    int legCount = 0;
+                    int slouchCount = 0;
+                    int lowHeightCount = 0;
+                    int shortDistanceCount = 0;
+                    bool projectionStandard = true;
+                    bool mobileGood = true;
+
+                    int frameCount = this.userPostureFrames[trackingId].Count;
+
+                    for (int p = frameCount - 60; p < frameCount; p++)
+                    {
+                        PostureFrame previousFrame = this.userPostureFrames[trackingId][p];
+
+                        if (previousFrame.Postures.Contains(Posture.Leg))
+                        {
+                            legCount++;
+                        }
+                        if (previousFrame.Postures.Contains(Posture.Slouch))
+                        {
+                            slouchCount++;
+                        }
+                        if (previousFrame.Postures.Contains(Posture.Distance))
+                        {
+                            shortDistanceCount++;
+                        }
+                        if (legCount > 40 || slouchCount > 40 || shortDistanceCount > 40)
+                        {
+                            if (legCount > 40)
+                            {
+                                feedback = PostureFeedback.LegCrossed;
+                                this.FeedbackChanged(1, headX, headY);
+                            }
+                            else if (slouchCount > 40)
+                            {
+                                feedback = PostureFeedback.Slouch;
+                                this.FeedbackChanged(2, headX, headY);
+                            }
+                            else
+                            {
+                                feedback = PostureFeedback.ShortDistance;
+                                this.FeedbackChanged(3, headX, headY);
+                            }
+                        }
+                        if (legCount > 40 || slouchCount > 40 || lowHeightCount > 40)
+                        {
+                            mobileGood = false;
+                            if (legCount > 40)
+                            {
+                                feedback = PostureFeedback.LegCrossed;
+                                this.FeedbackChanged(1, headX, headY);
+                            }
+                            else if (slouchCount > 40)
+                            {
+                                feedback = PostureFeedback.Slouch;
+                                this.FeedbackChanged(2, headX, headY);
+                            }
+                            else
+                            {
+                                feedback = PostureFeedback.LowHeight;
+                                this.FeedbackChanged(1, headX, headY);
+                            }
+                        }
+                    }
+                    if (feedback == PostureFeedback.Standard)
+                    {
+                        if (this.userPostureFrames.Count >= 30 * 30)
+                        {
+                            int q = 0;
+                            if (findSamePosture(armRegion, trackingId)||findSamePosture(legRegion, trackingId)
+                                || findSamePosture(trunkRegion, trackingId) || findSamePosture(headRegion, trackingId))
+                            {
+                                if (findSamePosture(armRegion, trackingId))
+                                {
+                                    feedback = PostureFeedback.ArmStationary;
+                                    this.FeedbackChanged(7, headX, headY);
+                                    q++;
+                                }
+                                if (findSamePosture(legRegion, trackingId))
+                                {
+                                    feedback = PostureFeedback.LegStationary;
+                                    this.FeedbackChanged(8, headX, headY);
+                                    q++;
+                                }
+                                if (findSamePosture(trunkRegion, trackingId))
+                                {
+                                    feedback = PostureFeedback.BodyStationary;
+                                    this.FeedbackChanged(5, headX, headY);
+                                    q++;
+                                }
+                                if (findSamePosture(headRegion, trackingId))
+                                {
+                                    feedback = PostureFeedback.HeadStationary;
+                                    this.FeedbackChanged(6, headX, headY);
+                                    q++;
+                                }
+                                if (q >= 2)
+                                {
+                                    feedback = PostureFeedback.BodyStationary;
+                                    this.FeedbackChanged(5, headX, headY);
+                                }
+                            }
+                            else
+                            {
+                                feedback = PostureFeedback.Standard;
+                                this.FeedbackChanged(4, headX, headY);
+                            }
+                        }
+                        else
+                        {
+                            feedback = PostureFeedback.Standard;
+                            this.FeedbackChanged(4, headX, headY);
+                        }
+                    }             
+                    //if (mobileGood)
+                    //{
+                    //    if (o >= 30 * 30)
+                    //    {
+                    //        if (userIsStationary[body.TrackingId][o])
+                    //        {
+                    //            mobileGood = false;
+                    //        }
+                    //        else
+                    //        {
+                    //            userIsGood[body.TrackingId][o / 60] = true;
+                    //        }
+                    //    }
+                    //    else
+                    //    {
+                    //        userIsGood[body.TrackingId][o / 60] = true;
+                    //    }
+                    //}
+
+
+                }
+
+                this.frameCounter++;
+            }
+        }
+
+            
+        
+
+        private List<Dictionary<JointType, CameraSpacePoint>> jointsHistory = new List<Dictionary<JointType, CameraSpacePoint>>();
+        private void getPostureDuration(List<JointType> jtList, Kinect2SBody body)
+        {
+            Dictionary<JointType, CameraSpacePoint> jointsPositions = new Dictionary<JointType, CameraSpacePoint>();
+
+            foreach (JointType jt in jtList)
+            {
+                //Debug.WriteLine(string.Format("jointtype: {0}, position: [{1}, {2}, {3}]", jt.JointType, jt.Position.X, jt.Position.Y, jt.Position.Z));
+                CameraSpacePoint coordinates = body.Joints[jt].CameraSpacePoint;
+                jointsPositions.Add(jt, coordinates);
+            }
+
+            jointsHistory.Add(jointsPositions);
+        }
+
+        private bool findSamePosture(List<JointType> bodyRegion, ulong trackingId)
+        {
+            List<PostureFrame> userPostureFrames = this.userPostureFrames[trackingId];
+            int frameCount = this.userPostureFrames.Count;
+
+            PostureFrame currentFrame = userPostureFrames[frameCount - 1];
+
+            int totalJointCount = 0;
+            int sameJointCount = 0;
+            for (int i = frameCount - 1 - 900; i < frameCount; i++)
+            {
+                PostureFrame previousFrame = userPostureFrames[i];
+                foreach (JointType jtType in bodyRegion)
+                {
+                    if (!currentFrame.Joints.ContainsKey(jtType) || !previousFrame.Joints.ContainsKey(jtType))
+                    {
+                        continue;
+                    }
+
+                    totalJointCount++;
+                    CameraSpacePoint currentPosition = currentFrame.Joints[jtType];
+                    CameraSpacePoint previousPosition = previousFrame.Joints[jtType];
+
+                    if (Math.Abs(previousPosition.X - currentPosition.X) <= 0.04 &&
+                        Math.Abs(previousPosition.X - currentPosition.Y) <= 0.04 &&
+                        Math.Abs(previousPosition.X - currentPosition.Z) <= 0.04)
+                    {
+                        sameJointCount++;
+                    }
+                }
+            }
+
+            if (sameJointCount > totalJointCount * 0.9)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
 
         void videoPanel1_MouseClick(object sender, MouseEventArgs e)
         {
@@ -178,7 +554,7 @@ namespace RoomAliveToolkit
 
         void RenderLoop()
         {
- 
+
             while (true)
             {
                 lock (renderLock)
@@ -189,7 +565,7 @@ namespace RoomAliveToolkit
                     deviceContext.ClearRenderTargetView(userViewRenderTargetView, Color4.Black);
                     deviceContext.ClearDepthStencilView(userViewDepthStencilView, DepthStencilClearFlags.Depth, 1, 0);
 
-                    SharpDX.Vector3 headPosition =  new SharpDX.Vector3(0f, 1.1f, -1.4f); // may need to change this default
+                    SharpDX.Vector3 headPosition = new SharpDX.Vector3(0f, 1.1f, -1.4f); // may need to change this default
 
                     if (localHeadTrackingEnabled)
                     {

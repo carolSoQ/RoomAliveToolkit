@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Shaders", "Shaders\Shaders.vcxproj", "{EE25A666-F343-402A-BCE8-756877510F5D}"
 EndProject
@@ -26,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectionMappingSample", "
 	ProjectSection(ProjectDependencies) = postProject
 		{EE25A666-F343-402A-BCE8-756877510F5D} = {EE25A666-F343-402A-BCE8-756877510F5D}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{21321D1D-E445-45B3-9223-1EAF9BF89878}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -119,6 +121,18 @@ Global
 		{59A35887-D3F7-4AB8-862F-98F68F9F7B51}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{59A35887-D3F7-4AB8-862F-98F68F9F7B51}.Release|Win32.ActiveCfg = Release|Any CPU
 		{59A35887-D3F7-4AB8-862F-98F68F9F7B51}.Release|x64.ActiveCfg = Release|Any CPU
+		{21321D1D-E445-45B3-9223-1EAF9BF89878}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21321D1D-E445-45B3-9223-1EAF9BF89878}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21321D1D-E445-45B3-9223-1EAF9BF89878}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{21321D1D-E445-45B3-9223-1EAF9BF89878}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{21321D1D-E445-45B3-9223-1EAF9BF89878}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{21321D1D-E445-45B3-9223-1EAF9BF89878}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{21321D1D-E445-45B3-9223-1EAF9BF89878}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21321D1D-E445-45B3-9223-1EAF9BF89878}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21321D1D-E445-45B3-9223-1EAF9BF89878}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{21321D1D-E445-45B3-9223-1EAF9BF89878}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{21321D1D-E445-45B3-9223-1EAF9BF89878}.Release|Win32.ActiveCfg = Release|Any CPU
+		{21321D1D-E445-45B3-9223-1EAF9BF89878}.Release|x64.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
