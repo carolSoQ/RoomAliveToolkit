@@ -59,6 +59,116 @@
         {
             InitializeComponent();
             createSkeleton();
+
+            this.DoubleBuffered = true;
+            this.SetStyle(ControlStyles.UserPaint |
+              ControlStyles.AllPaintingInWmPaint |
+              ControlStyles.ResizeRedraw |
+              ControlStyles.ContainerControl |
+              ControlStyles.OptimizedDoubleBuffer |
+              ControlStyles.SupportsTransparentBackColor
+              , true);
+
+            //this.videoPanel1.Paint += panel1_Paint;
+        }
+
+        void panel1_Paint(object sender, PaintEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+            // Draw skeletons
+            foreach (Skeleton skeleton in this.skeletons.Values)
+            {
+                IReadOnlyDictionary<JointType, Kinect2SJoint> joints = skeleton.Joints;
+                IDictionary<JointType, System.Drawing.Point> jointPoints = skeleton.JointPoints;
+
+                // Draw the bones
+                //foreach (var bone in this.bones)
+                //{
+                //    JointType jointtype0 = bone.Item1;
+                //    JointType jointtype1 = bone.Item2;
+                //    Kinect2SJoint joint0 = joints[jointtype0];
+                //    Kinect2SJoint joint1 = joints[jointtype1];
+
+                //    // If we can't find either of these joints, exit
+                //    if (joint0.TrackingState == TrackingState.NotTracked ||
+                //        joint1.TrackingState == TrackingState.NotTracked)
+                //    {
+                //        return;
+                //    }
+
+                //    // We assume all drawn bones are inferred unless both joints are tracked
+                //    Pen drawpen = this.inferredBonePen;
+                //    if ((joint0.TrackingState == TrackingState.Tracked) && (joint1.TrackingState == TrackingState.Tracked))
+                //    {
+                //        drawpen = skeleton.DrawingPen;
+                //    }
+
+                //    g.DrawLine(drawpen, jointPoints[jointtype0], jointPoints[jointtype1]);
+                //} // bones
+
+                // Draw the joints
+                foreach (JointType jointType in joints.Keys)
+                {
+                    if (jointType != JointType.Head) continue;
+                    int jointX = jointPoints[jointType].X;
+                    int jointY = jointPoints[jointType].Y;
+                    System.Diagnostics.Debug.WriteLine("joint: " + jointType + " x: " + jointX + " y: " + jointY);
+
+                    if (skeleton.Feedback != ProjectionMappingSample.PostureFeedback.Standard)
+                    {
+                        if (skeleton.Feedback == ProjectionMappingSample.PostureFeedback.LegCrossed)
+                        {
+                            if (leftLegRegion.Contains(jointType) || rightLegRegion.Contains(jointType))
+                            {
+                                g.DrawEllipse(this.dangerousJointPen, jointX, jointY, jointThickness, jointThickness);
+                            }
+                            else
+                            {
+                                g.DrawEllipse(this.trackedJointPen, jointX, jointY, jointThickness, jointThickness);
+                            }
+                        }
+                        else if (skeleton.Feedback == ProjectionMappingSample.PostureFeedback.Slouch)
+                        {
+                            if (trunkRegion.Contains(jointType))
+                            {
+                                g.DrawEllipse(this.dangerousJointPen, jointX, jointY, jointThickness, jointThickness);
+                            }
+                            else
+                            {
+                                g.DrawEllipse(this.trackedJointPen, jointX, jointY, jointThickness, jointThickness);
+                            }
+                        }
+                        else if (skeleton.Feedback == ProjectionMappingSample.PostureFeedback.LowHeight)
+                        {
+                            if (headRegion.Contains(jointType))
+                            {
+                                g.DrawEllipse(this.dangerousJointPen, jointX, jointY, jointThickness, jointThickness);
+                            }
+                            else
+                            {
+                                g.DrawEllipse(this.trackedJointPen, jointX, jointY, jointThickness, jointThickness);
+                            }
+                        }
+                        else
+                        {
+                            if (jointType == JointType.Head)
+                            {
+                                g.DrawEllipse(this.dangerousJointPen, jointX, jointY, jointThickness, jointThickness);
+                            }
+                            else
+                            {
+                                g.DrawEllipse(this.trackedJointPen, jointX, jointY, jointThickness, jointThickness);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        g.DrawEllipse(this.trackedJointPen, jointX, jointY, jointThickness, jointThickness);
+                    }
+                } // joints
+            } // skeletons
         }
 
         public Form1(Factory factory, SharpDX.Direct3D11.Device device, Object renderLock)
@@ -174,100 +284,103 @@
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            base.OnPaint(e);
+            //base.OnPaint(e);
 
-            Graphics g = e.Graphics;
+            //Graphics g = e.Graphics;
+            //g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
-            // Draw skeletons
-            foreach (Skeleton skeleton in this.skeletons.Values)
-            {
-                IReadOnlyDictionary<JointType, Kinect2SJoint> joints = skeleton.Joints;
-                IDictionary<JointType, System.Drawing.Point> jointPoints = skeleton.JointPoints;
+            //// Draw skeletons
+            //foreach (Skeleton skeleton in this.skeletons.Values)
+            //{
+            //    IReadOnlyDictionary<JointType, Kinect2SJoint> joints = skeleton.Joints;
+            //    IDictionary<JointType, System.Drawing.Point> jointPoints = skeleton.JointPoints;
 
-                // Draw the bones
-                foreach (var bone in this.bones)
-                {
-                    JointType jointtype0 = bone.Item1;
-                    JointType jointtype1 = bone.Item2;
-                    Kinect2SJoint joint0 = joints[jointtype0];
-                    Kinect2SJoint joint1 = joints[jointtype1];
+            //    // Draw the bones
+            //    //foreach (var bone in this.bones)
+            //    //{
+            //    //    JointType jointtype0 = bone.Item1;
+            //    //    JointType jointtype1 = bone.Item2;
+            //    //    Kinect2SJoint joint0 = joints[jointtype0];
+            //    //    Kinect2SJoint joint1 = joints[jointtype1];
 
-                    // If we can't find either of these joints, exit
-                    if (joint0.TrackingState == TrackingState.NotTracked ||
-                        joint1.TrackingState == TrackingState.NotTracked)
-                    {
-                        return;
-                    }
+            //    //    // If we can't find either of these joints, exit
+            //    //    if (joint0.TrackingState == TrackingState.NotTracked ||
+            //    //        joint1.TrackingState == TrackingState.NotTracked)
+            //    //    {
+            //    //        return;
+            //    //    }
 
-                    // We assume all drawn bones are inferred unless both joints are tracked
-                    Pen drawpen = this.inferredBonePen;
-                    if ((joint0.TrackingState == TrackingState.Tracked) && (joint1.TrackingState == TrackingState.Tracked))
-                    {
-                        drawpen = skeleton.DrawingPen;
-                    }
+            //    //    // We assume all drawn bones are inferred unless both joints are tracked
+            //    //    Pen drawpen = this.inferredBonePen;
+            //    //    if ((joint0.TrackingState == TrackingState.Tracked) && (joint1.TrackingState == TrackingState.Tracked))
+            //    //    {
+            //    //        drawpen = skeleton.DrawingPen;
+            //    //    }
 
-                    g.DrawLine(drawpen, jointPoints[jointtype0], jointPoints[jointtype1]);
-                } // bones
+            //    //    g.DrawLine(drawpen, jointPoints[jointtype0], jointPoints[jointtype1]);
+            //    //} // bones
 
-                // Draw the joints
-                foreach (JointType jointType in joints.Keys)
-                {
-                    int jointX = jointPoints[jointType].X;
-                    int jointY = jointPoints[jointType].Y;
+            //    // Draw the joints
+            //    foreach (JointType jointType in joints.Keys)
+            //    {
+            //        if (jointType != JointType.Head) continue;
+            //        int jointX = jointPoints[jointType].X;
+            //        int jointY = jointPoints[jointType].Y;
+            //        System.Diagnostics.Debug.WriteLine("joint: " + jointType + " x: " + jointX + " y: " + jointY);
 
-                    if (skeleton.Feedback != ProjectionMappingSample.PostureFeedback.Standard)
-                    {
-                        if (skeleton.Feedback == ProjectionMappingSample.PostureFeedback.LegCrossed)
-                        {
-                            if (leftLegRegion.Contains(jointType) || rightLegRegion.Contains(jointType))
-                            {
-                                g.DrawEllipse(this.dangerousJointPen, jointX, jointY, 3 * jointThickness, 3 * jointThickness);
-                            }
-                            else
-                            {
-                                g.DrawEllipse(this.trackedJointPen, jointX, jointY, jointThickness, jointThickness);
-                            }
-                        }
-                        else if (skeleton.Feedback == ProjectionMappingSample.PostureFeedback.Slouch)
-                        {
-                            if (trunkRegion.Contains(jointType))
-                            {
-                                g.DrawEllipse(this.dangerousJointPen, jointX, jointY, 3 * jointThickness, 3 * jointThickness);
-                            }
-                            else
-                            {
-                                g.DrawEllipse(this.trackedJointPen, jointX, jointY, jointThickness, jointThickness);
-                            }
-                        }
-                        else if (skeleton.Feedback == ProjectionMappingSample.PostureFeedback.LowHeight)
-                        {
-                            if (headRegion.Contains(jointType))
-                            {
-                                g.DrawEllipse(this.dangerousJointPen, jointX, jointY, 3 * jointThickness, 3 * jointThickness);
-                            }
-                            else
-                            {
-                                g.DrawEllipse(this.trackedJointPen, jointX, jointY, jointThickness, jointThickness);
-                            }
-                        }
-                        else
-                        {
-                            if (jointType == JointType.Head)
-                            {
-                                g.DrawEllipse(this.dangerousJointPen, jointX, jointY, 3 * jointThickness, 3 * jointThickness);
-                            }
-                            else
-                            {
-                                g.DrawEllipse(this.trackedJointPen, jointX, jointY, jointThickness, jointThickness);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        g.DrawEllipse(this.trackedJointPen, jointX, jointY, jointThickness, jointThickness);
-                    }
-                } // joints
-            } // skeletons
+            //        if (skeleton.Feedback != ProjectionMappingSample.PostureFeedback.Standard)
+            //        {
+            //            if (skeleton.Feedback == ProjectionMappingSample.PostureFeedback.LegCrossed)
+            //            {
+            //                if (leftLegRegion.Contains(jointType) || rightLegRegion.Contains(jointType))
+            //                {
+            //                    g.DrawEllipse(this.dangerousJointPen, jointX, jointY, jointThickness, jointThickness);
+            //                }
+            //                else
+            //                {
+            //                    g.DrawEllipse(this.trackedJointPen, jointX, jointY, jointThickness, jointThickness);
+            //                }
+            //            }
+            //            else if (skeleton.Feedback == ProjectionMappingSample.PostureFeedback.Slouch)
+            //            {
+            //                if (trunkRegion.Contains(jointType))
+            //                {
+            //                    g.DrawEllipse(this.dangerousJointPen, jointX, jointY, jointThickness, jointThickness);
+            //                }
+            //                else
+            //                {
+            //                    g.DrawEllipse(this.trackedJointPen, jointX, jointY, jointThickness, jointThickness);
+            //                }
+            //            }
+            //            else if (skeleton.Feedback == ProjectionMappingSample.PostureFeedback.LowHeight)
+            //            {
+            //                if (headRegion.Contains(jointType))
+            //                {
+            //                    g.DrawEllipse(this.dangerousJointPen, jointX, jointY, jointThickness, jointThickness);
+            //                }
+            //                else
+            //                {
+            //                    g.DrawEllipse(this.trackedJointPen, jointX, jointY, jointThickness, jointThickness);
+            //                }
+            //            }
+            //            else
+            //            {
+            //                if (jointType == JointType.Head)
+            //                {
+            //                    g.DrawEllipse(this.dangerousJointPen, jointX, jointY, jointThickness, jointThickness);
+            //                }
+            //                else
+            //                {
+            //                    g.DrawEllipse(this.trackedJointPen, jointX, jointY, jointThickness, jointThickness);
+            //                }
+            //            }
+            //        }
+            //        else
+            //        {
+            //            g.DrawEllipse(this.trackedJointPen, jointX, jointY, jointThickness, jointThickness);
+            //        }
+            //    } // joints
+            //} // skeletons
         }
 
         public void On_BodyAmountCounted(int bodyAmount)
@@ -318,14 +431,14 @@
                     foreach (JointType jointType in body.Joints.Keys)
                     {
                         CameraSpacePoint position = body.Joints[jointType].CameraSpacePoint;
-                        int x = (int)(position.X + a);
-                        int y = (int)(position.Y + b);
+                        int x = (int)(495 + 530.87 * position.X);
+                        int y = (int)(533.14 - 459.46 * position.Y);
                         jointPoints[jointType] = new System.Drawing.Point(x, y);
                     }
 
                     Pen drawPen = this.bodyColors[bodyId - 1];
                     this.skeletons[bodyId] = new Skeleton(feedbackTuple.Item1, body.Joints, jointPoints, drawPen);
-                    this.Invalidate();
+                    this.BeginInvoke((Action)(() => this.Invalidate()));
                 }
             }
             else
