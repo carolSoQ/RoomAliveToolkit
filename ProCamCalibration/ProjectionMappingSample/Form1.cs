@@ -23,12 +23,37 @@
     public partial class Form1 : Form
     {
 
-        private readonly Brush dangerousJointBrush = new SolidBrush(System.Drawing.Color.FromArgb(200, 255, 0, 0));
-        private readonly Brush trackedJointBrush = new SolidBrush(System.Drawing.Color.FromArgb(255, 68, 192, 68));
-        private double JointThickness = 3;
-        private List<Tuple<JointType, JointType>> bones;
-        private List<System.Windows.Media.Pen> bodyColors;
+        private readonly Pen dangerousJointPen = new Pen(System.Drawing.Color.FromArgb(200, 255, 0, 0));
+        private readonly Pen trackedJointPen = new Pen(System.Drawing.Color.FromArgb(255, 68, 192, 68));
+        private Pen inferredBonePen = new Pen(Brushes.Gray, 1);
+        private int jointThickness = 3;
 
+        private List<Pen> bodyColors;
+        private List<Tuple<JointType, JointType>> bones;
+        private List<JointType> headRegion = new List<JointType>() { JointType.Head, JointType.Neck };
+        private List<JointType> leftArmRegion = new List<JointType>() { JointType.ShoulderLeft, JointType.ElbowLeft, JointType.WristLeft, JointType.HandLeft };
+        private List<JointType> rightArmRegion = new List<JointType>() { JointType.ShoulderRight, JointType.ElbowRight, JointType.WristRight, JointType.HandRight };
+        private List<JointType> trunkRegion = new List<JointType>() { JointType.ShoulderLeft, JointType.ShoulderRight, JointType.SpineShoulder, JointType.SpineBase, JointType.SpineMid };
+        private List<JointType> leftLegRegion = new List<JointType>() { JointType.KneeLeft, JointType.HipLeft, JointType.AnkleLeft, JointType.FootLeft };
+        private List<JointType> rightLegRegion = new List<JointType>() { JointType.KneeRight, JointType.HipRight, JointType.AnkleRight, JointType.FootRight };
+
+        public class Skeleton
+        {
+            public ProjectionMappingSample.PostureFeedback Feedback { get; private set; }
+            public IReadOnlyDictionary<JointType, Kinect2SJoint> Joints { get; private set; }
+            public IDictionary<JointType, System.Drawing.Point> JointPoints { get; private set; }
+            public Pen DrawingPen { get; private set; }
+
+            public Skeleton(ProjectionMappingSample.PostureFeedback feedback, IReadOnlyDictionary<JointType, Kinect2SJoint> joints, IDictionary<JointType, System.Drawing.Point> jointPoints, Pen drawingPen)
+            {
+                this.Feedback = feedback;
+                this.Joints = joints;
+                this.JointPoints = jointPoints;
+                this.DrawingPen = drawingPen;
+            }
+        }
+
+        private Dictionary<int, Skeleton> skeletons;
 
         public Form1()
         {
@@ -51,6 +76,8 @@
 
         public void createSkeleton()
         {
+            this.skeletons = new Dictionary<int, Skeleton>();
+
             // a bone defined as a line between two joints
             this.bones = new List<Tuple<JointType, JointType>>();
 
@@ -89,13 +116,13 @@
             this.bones.Add(new Tuple<JointType, JointType>(JointType.AnkleLeft, JointType.FootLeft));
 
             // populate body colors, one for each BodyIndex
-            this.bodyColors = new List<System.Windows.Media.Pen>();
-            this.bodyColors.Add(new System.Windows.Media.Pen(System.Windows.Media.Brushes.PaleGreen, 6));
-            this.bodyColors.Add(new System.Windows.Media.Pen(System.Windows.Media.Brushes.PaleTurquoise, 6));
-            this.bodyColors.Add(new System.Windows.Media.Pen(System.Windows.Media.Brushes.PaleGoldenrod, 6));
-            this.bodyColors.Add(new System.Windows.Media.Pen(System.Windows.Media.Brushes.LightCoral, 6));
-            this.bodyColors.Add(new System.Windows.Media.Pen(System.Windows.Media.Brushes.Plum, 6));
-            this.bodyColors.Add(new System.Windows.Media.Pen(System.Windows.Media.Brushes.Pink, 6));
+            this.bodyColors = new List<Pen>();
+            this.bodyColors.Add(new Pen(Brushes.PaleGreen, 6));
+            this.bodyColors.Add(new Pen(Brushes.PaleTurquoise, 6));
+            this.bodyColors.Add(new Pen(Brushes.PaleGoldenrod, 6));
+            this.bodyColors.Add(new Pen(Brushes.LightCoral, 6));
+            this.bodyColors.Add(new Pen(Brushes.Plum, 6));
+            this.bodyColors.Add(new Pen(Brushes.Pink, 6));
         }
 
         protected override void OnLoad(EventArgs e)
@@ -149,6 +176,98 @@
         {
             base.OnPaint(e);
 
+            Graphics g = e.Graphics;
+
+            // Draw skeletons
+            foreach (Skeleton skeleton in this.skeletons.Values)
+            {
+                IReadOnlyDictionary<JointType, Kinect2SJoint> joints = skeleton.Joints;
+                IDictionary<JointType, System.Drawing.Point> jointPoints = skeleton.JointPoints;
+
+                // Draw the bones
+                foreach (var bone in this.bones)
+                {
+                    JointType jointtype0 = bone.Item1;
+                    JointType jointtype1 = bone.Item2;
+                    Kinect2SJoint joint0 = joints[jointtype0];
+                    Kinect2SJoint joint1 = joints[jointtype1];
+
+                    // If we can't find either of these joints, exit
+                    if (joint0.TrackingState == TrackingState.NotTracked ||
+                        joint1.TrackingState == TrackingState.NotTracked)
+                    {
+                        return;
+                    }
+
+                    // We assume all drawn bones are inferred unless both joints are tracked
+                    Pen drawpen = this.inferredBonePen;
+                    if ((joint0.TrackingState == TrackingState.Tracked) && (joint1.TrackingState == TrackingState.Tracked))
+                    {
+                        drawpen = skeleton.DrawingPen;
+                    }
+
+                    g.DrawLine(drawpen, jointPoints[jointtype0], jointPoints[jointtype1]);
+                } // bones
+
+                // Draw the joints
+                foreach (JointType jointType in joints.Keys)
+                {
+                    int jointX = jointPoints[jointType].X;
+                    int jointY = jointPoints[jointType].Y;
+
+                    if (skeleton.Feedback != ProjectionMappingSample.PostureFeedback.Standard)
+                    {
+                        if (skeleton.Feedback == ProjectionMappingSample.PostureFeedback.LegCrossed)
+                        {
+                            if (leftLegRegion.Contains(jointType) || rightLegRegion.Contains(jointType))
+                            {
+                                g.DrawEllipse(this.dangerousJointPen, jointX, jointY, 3 * jointThickness, 3 * jointThickness);
+                            }
+                            else
+                            {
+                                g.DrawEllipse(this.trackedJointPen, jointX, jointY, jointThickness, jointThickness);
+                            }
+                        }
+                        else if (skeleton.Feedback == ProjectionMappingSample.PostureFeedback.Slouch)
+                        {
+                            if (trunkRegion.Contains(jointType))
+                            {
+                                g.DrawEllipse(this.dangerousJointPen, jointX, jointY, 3 * jointThickness, 3 * jointThickness);
+                            }
+                            else
+                            {
+                                g.DrawEllipse(this.trackedJointPen, jointX, jointY, jointThickness, jointThickness);
+                            }
+                        }
+                        else if (skeleton.Feedback == ProjectionMappingSample.PostureFeedback.LowHeight)
+                        {
+                            if (headRegion.Contains(jointType))
+                            {
+                                g.DrawEllipse(this.dangerousJointPen, jointX, jointY, 3 * jointThickness, 3 * jointThickness);
+                            }
+                            else
+                            {
+                                g.DrawEllipse(this.trackedJointPen, jointX, jointY, jointThickness, jointThickness);
+                            }
+                        }
+                        else
+                        {
+                            if (jointType == JointType.Head)
+                            {
+                                g.DrawEllipse(this.dangerousJointPen, jointX, jointY, 3 * jointThickness, 3 * jointThickness);
+                            }
+                            else
+                            {
+                                g.DrawEllipse(this.trackedJointPen, jointX, jointY, jointThickness, jointThickness);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        g.DrawEllipse(this.trackedJointPen, jointX, jointY, jointThickness, jointThickness);
+                    }
+                } // joints
+            } // skeletons
         }
 
         public void On_BodyAmountCounted(int bodyAmount)
@@ -163,17 +282,17 @@
             {
                 case 1:
                     face = tracking_face;
-                    
+
                     break;
                 case 2:
                     face = tracking_face2;
                     break;
             }
 
-            int x = (int)(495 + 530.87 * headX);
-            int y = (int)(533.14 - 459.46 * headY);
+            int faceX = (int)(495 + 530.87 * headX);
+            int faceY = (int)(533.14 - 459.46 * headY);
             face.BeginInvoke((Action)(() => face.Visible = true));
-            face.BeginInvoke((Action)(() => face.Location = new System.Drawing.Point(x, y)));
+            face.BeginInvoke((Action)(() => face.Location = new System.Drawing.Point(faceX, faceY)));
 
             if (feedbackTuple.Item1 != ProjectionMappingSample.PostureFeedback.Standard)
             {
@@ -192,7 +311,21 @@
                 }
                 else
                 {
+                    float a = face.Location.X - body.Joints[JointType.Head].CameraSpacePoint.X;
+                    float b = face.Location.Y - body.Joints[JointType.Head].CameraSpacePoint.Y;
 
+                    Dictionary<JointType, System.Drawing.Point> jointPoints = new Dictionary<JointType, System.Drawing.Point>();
+                    foreach (JointType jointType in body.Joints.Keys)
+                    {
+                        CameraSpacePoint position = body.Joints[jointType].CameraSpacePoint;
+                        int x = (int)(position.X + a);
+                        int y = (int)(position.Y + b);
+                        jointPoints[jointType] = new System.Drawing.Point(x, y);
+                    }
+
+                    Pen drawPen = this.bodyColors[bodyId - 1];
+                    this.skeletons[bodyId] = new Skeleton(feedbackTuple.Item1, body.Joints, jointPoints, drawPen);
+                    this.Invalidate();
                 }
             }
             else
@@ -200,130 +333,6 @@
                 face.BeginInvoke((Action)(() => face.Visible = false));
             }
         }
-
-        public void On_SkeletonDrawing(Kinect2SBody body, ProjectionMappingSample.PostureFrame postureFrame)
-        {
-            System.Windows.Media.Pen drawPen = this.bodyColors[0];
-            foreach (Kinect2SJoint joint in body.Joints.Values)
-            {
-                //this.DrawBody(joints, jointPoints, dc, drawPen);
-            }
-        }
-
-        private void DrawBody(IReadOnlyDictionary<JointType, Joint> joints, IDictionary<JointType, System.Drawing.Point> jointPoints, Pen drawingPen)
-        {
-            //// Draw the bones
-            //foreach (var bone in this.bones)
-            //{
-            //    this.DrawBone(joints, jointPoints, bone.Item1, bone.Item2, drawingContext, drawingPen);
-            //}
-            //// Draw the joints
-            //foreach (JointType jointType in joints.Keys)
-            //{
-            //    Brush drawBrush = null;
-            //    if (badPosture)
-            //    {
-            //        if (crossedLegsDetected)
-            //        {
-            //            if (leftLegRegion.Contains(jointType) || rightLegRegion.Contains(jointType))
-            //            {
-            //                drawBrush = this.dangerousJointBrush;
-            //                drawingContext.DrawEllipse(drawBrush, null, jointPoints[jointType], 3 * JointThickness, 3 * JointThickness);
-            //            }
-            //            else
-            //            {
-            //                drawBrush = this.trackedJointBrush;
-            //                drawingContext.DrawEllipse(drawBrush, null, jointPoints[jointType], JointThickness, JointThickness);
-            //            }
-            //        }
-            //        else if (slouchDetected)
-            //        {
-            //            if (trunkRegion.Contains(jointType))
-            //            {
-            //                drawBrush = this.dangerousJointBrush;
-            //                drawingContext.DrawEllipse(drawBrush, null, jointPoints[jointType], 3 * JointThickness, 3 * JointThickness);
-            //            }
-            //            else
-            //            {
-            //                drawBrush = this.trackedJointBrush;
-            //                drawingContext.DrawEllipse(drawBrush, null, jointPoints[jointType], JointThickness, JointThickness);
-            //            }
-            //        }
-            //        else if (lowViewingHeightDetected)
-            //        {
-            //            if (headRegion.Contains(jointType))
-            //            {
-            //                drawBrush = this.dangerousJointBrush;
-            //                drawingContext.DrawEllipse(drawBrush, null, jointPoints[jointType], 3 * JointThickness, 3 * JointThickness);
-            //            }
-            //            else
-            //            {
-            //                drawBrush = this.trackedJointBrush;
-            //                drawingContext.DrawEllipse(drawBrush, null, jointPoints[jointType], JointThickness, JointThickness);
-            //            }
-            //        }
-            //        else
-            //        {
-            //            if (jointType == JointType.Head)
-            //            {
-            //                drawBrush = this.dangerousJointBrush;
-            //                drawingContext.DrawEllipse(drawBrush, null, jointPoints[jointType], 3 * JointThickness, 3 * JointThickness);
-            //            }
-            //            else
-            //            {
-            //                drawBrush = this.trackedJointBrush;
-            //                drawingContext.DrawEllipse(drawBrush, null, jointPoints[jointType], JointThickness, JointThickness);
-            //            }
-            //        }
-            //    }
-
-            //    else
-            //    {
-            //        drawBrush = this.trackedJointBrush;
-            //        drawingContext.DrawEllipse(drawBrush, null, jointPoints[jointType], JointThickness, JointThickness);
-            //    }
-
-                //TrackingState trackingState = joints[jointType].TrackingState;
-
-                //if (trackingState == TrackingState.Tracked)
-                //{
-                //drawBrush = this.trackedJointBrush;
-                //}
-                //else if (trackingState == TrackingState.Inferred)
-                //{
-                //    drawBrush = this.inferredJointBrush;
-                //}
-
-                //if (drawBrush != null)
-                //{
-                //    drawingContext.DrawEllipse(drawBrush, null, jointPoints[jointType], JointThickness, JointThickness);
-                //}
-            //}
-
-        }
-
-        private void DrawBone(IReadOnlyDictionary<JointType, Joint> joints, IDictionary<JointType, System.Drawing.Point> jointPoints, JointType jointType0, JointType jointType1, Pen drawingPen)
-        {
-            //Joint joint0 = joints[jointType0];
-            //Joint joint1 = joints[jointType1];
-
-            //// If we can't find either of these joints, exit
-            //if (joint0.TrackingState == TrackingState.NotTracked ||
-            //    joint1.TrackingState == TrackingState.NotTracked)
-            //{
-            //    return;
-            //}
-
-            //// We assume all drawn bones are inferred unless BOTH joints are tracked
-            //Pen drawPen = this.inferredBonePen;
-            //if ((joint0.TrackingState == TrackingState.Tracked) && (joint1.TrackingState == TrackingState.Tracked))
-            //{
-            //    drawPen = drawingPen;
-            //}
-
-            //drawingContext.DrawLine(drawPen, jointPoints[jointType0], jointPoints[jointType1]);
-        }
-
 
         SharpDX.Direct3D11.Device device;
         Factory factory;
@@ -744,7 +753,7 @@
             int digit_sec;
             int tens_sec;
             int digit_min;
-            int tens_min; 
+            int tens_min;
             char[] times = label1.Text.ToCharArray();
             badUserCount = current_bad_user_count;
             digit_sec = Convert.ToInt32(new string(times[4], 1));
