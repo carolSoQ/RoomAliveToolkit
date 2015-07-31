@@ -124,9 +124,9 @@
             // 
             // videoPanel1
             // 
-            this.videoPanel1.BackColor = System.Drawing.SystemColors.Control;
+            this.videoPanel1.BackColor = System.Drawing.Color.Transparent;
             this.videoPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.videoPanel1.ForeColor = System.Drawing.SystemColors.Control;
+            this.videoPanel1.ForeColor = System.Drawing.Color.Transparent;
             this.videoPanel1.Location = new System.Drawing.Point(0, 0);
             this.videoPanel1.Name = "videoPanel1";
             this.videoPanel1.Size = new System.Drawing.Size(1384, 1011);
@@ -138,7 +138,6 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
-            this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(1384, 1011);
             this.Controls.Add(this.tracking_face2);
             this.Controls.Add(this.tracking_face);
@@ -149,7 +148,6 @@
             this.Controls.Add(this.videoPanel1);
             this.Name = "Form1";
             this.Text = "Form1";
-            this.TransparencyKey = System.Drawing.SystemColors.Control;
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
