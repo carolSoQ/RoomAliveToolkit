@@ -47,6 +47,11 @@
             this.good3 = new System.Windows.Forms.Button();
             this.good0 = new System.Windows.Forms.Button();
             this.bad0 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
+            this.button5 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -209,9 +214,9 @@
             // 
             // good0
             // 
-            this.good0.Location = new System.Drawing.Point(468, 215);
+            this.good0.Location = new System.Drawing.Point(295, 375);
             this.good0.Name = "good0";
-            this.good0.Size = new System.Drawing.Size(75, 63);
+            this.good0.Size = new System.Drawing.Size(75, 53);
             this.good0.TabIndex = 25;
             this.good0.Text = "good0";
             this.good0.UseVisualStyleBackColor = true;
@@ -219,18 +224,68 @@
             // 
             // bad0
             // 
-            this.bad0.Location = new System.Drawing.Point(468, 284);
+            this.bad0.Location = new System.Drawing.Point(376, 375);
             this.bad0.Name = "bad0";
-            this.bad0.Size = new System.Drawing.Size(75, 55);
+            this.bad0.Size = new System.Drawing.Size(85, 53);
             this.bad0.TabIndex = 26;
             this.bad0.Text = "bad0";
             this.bad0.UseVisualStyleBackColor = true;
             this.bad0.Click += new System.EventHandler(this.bad0_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(132, 346);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 27;
+            this.button1.Text = "spot";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(132, 375);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 28;
+            this.button2.Text = "light eyes";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(132, 405);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 29;
+            this.button3.Text = "deep eyes";
+            this.button3.UseVisualStyleBackColor = true;
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(214, 346);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(75, 82);
+            this.button4.TabIndex = 30;
+            this.button4.Text = "skeleton";
+            this.button4.UseVisualStyleBackColor = true;
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(297, 346);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(165, 23);
+            this.button5.TabIndex = 31;
+            this.button5.Text = "clock visibility";
+            this.button5.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.ClientSize = new System.Drawing.Size(1384, 1011);
+            this.Controls.Add(this.button5);
+            this.Controls.Add(this.button4);
+            this.Controls.Add(this.button3);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.bad0);
             this.Controls.Add(this.good0);
             this.Controls.Add(this.good3);
@@ -262,6 +317,11 @@
             this.Controls.SetChildIndex(this.good3, 0);
             this.Controls.SetChildIndex(this.good0, 0);
             this.Controls.SetChildIndex(this.bad0, 0);
+            this.Controls.SetChildIndex(this.button1, 0);
+            this.Controls.SetChildIndex(this.button2, 0);
+            this.Controls.SetChildIndex(this.button3, 0);
+            this.Controls.SetChildIndex(this.button4, 0);
+            this.Controls.SetChildIndex(this.button5, 0);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.menuStrip1.ResumeLayout(false);
@@ -292,5 +352,10 @@
         public System.Windows.Forms.Button badPostrureDetected;
         private System.Windows.Forms.Button good0;
         private System.Windows.Forms.Button bad0;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button button5;
     }
 }

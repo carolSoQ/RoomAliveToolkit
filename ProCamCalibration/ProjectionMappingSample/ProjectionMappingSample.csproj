@@ -124,6 +124,9 @@
     <Content Include="Content\devilClock2.png" />
     <Content Include="Content\devilClock3.png" />
     <Content Include="Content\devilClock_.png" />
+    <Content Include="Content\spot.png" />
+    <Content Include="Content\deepeyes.png" />
+    <Content Include="Content\lighteyes.png" />
     <Content Include="Content\WoodFine.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

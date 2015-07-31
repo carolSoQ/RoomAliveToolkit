@@ -29,6 +29,7 @@
         private List<Tuple<JointType, JointType>> bones;
         private List<System.Windows.Media.Pen> bodyColors;
 
+
         public Form1()
         {
             InitializeComponent();
@@ -148,24 +149,55 @@
         {
             base.OnPaint(e);
 
-            System.Drawing.Bitmap image = new System.Drawing.Bitmap("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\spot_deep_eyes.png", false);
-            e.Graphics.DrawImage(image, 300, 300);
         }
 
         public void On_BodyAmountCounted(int bodyAmount)
         {
+
         }
 
-        public void On_FeedbackChanged(int feedbackType, double headX, double headY)
+        public void On_FeedbackChanged(int bodyId, Kinect2SBody body, Tuple<ProjectionMappingSample.PostureFeedback, int> feedbackTuple, float headX, float headY)
         {
-            if (feedbackType != 4)
+            PictureBox face = null;
+            switch (bodyId)
             {
-                //System.Drawing.
-                //PaintEventArgs e 
-                //drawFace(image, e, (515+730*headX), (120-750*headY));
-                //System.Drawing.Graphics graphics = this.CreateGraphics();
-                //graphics.DrawEllipse(System.Drawing.Pens.White, (int)(515 + 730 * headX), (int)(120 - 750 * headY), 100, 100);
-                //graphics.DrawEllipse(Pens.White, 500, 500, 300, 300);
+                case 1:
+                    face = tracking_face;
+                    
+                    break;
+                case 2:
+                    face = tracking_face2;
+                    break;
+            }
+
+            int x = (int)(495 + 530.87 * headX);
+            int y = (int)(533.14 - 459.46 * headY);
+            face.BeginInvoke((Action)(() => face.Visible = true));
+            face.BeginInvoke((Action)(() => face.Location = new System.Drawing.Point(x, y)));
+
+            if (feedbackTuple.Item1 != ProjectionMappingSample.PostureFeedback.Standard)
+            {
+                if (feedbackTuple.Item2 < 3)
+                {
+                    face.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\spot.png");
+                }
+                else if (feedbackTuple.Item2 >= 3 && feedbackTuple.Item2 < 5)
+                {
+                    face.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\lighteyes.png");
+
+                }
+                else if (feedbackTuple.Item2 >= 5 && feedbackTuple.Item2 < 7)
+                {
+                    face.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\deepeyes.png");
+                }
+                else
+                {
+
+                }
+            }
+            else
+            {
+                face.BeginInvoke((Action)(() => face.Visible = false));
             }
         }
 
@@ -709,12 +741,16 @@
 
         private void devilTimer_Tick(object sender, EventArgs e)
         {
+            int digit_sec;
+            int tens_sec;
+            int digit_min;
+            int tens_min; 
             char[] times = label1.Text.ToCharArray();
             badUserCount = current_bad_user_count;
-            int digit_sec = Convert.ToInt32(new string(times[4], 1));
-            int tens_sec = Convert.ToInt32(new string(times[3], 1));
-            int digit_min = Convert.ToInt32(new string(times[1], 1));
-            int tens_min = Convert.ToInt32(new string(times[0], 1));
+            digit_sec = Convert.ToInt32(new string(times[4], 1));
+            tens_sec = Convert.ToInt32(new string(times[3], 1));
+            digit_min = Convert.ToInt32(new string(times[1], 1));
+            tens_min = Convert.ToInt32(new string(times[0], 1));
             if (current_bad_user_count == 1)
             {
                 System.Diagnostics.Debug.WriteLine(digit_sec);
@@ -875,19 +911,7 @@
         ProjectorCameraEnsemble.Projector projector;
         public SharpDX.Matrix view, projection;
 
-        double aCriteria = 0.075;
-        double bCriteria = 0;
-        double cCriteria = -0.5;
-        double dCriteria = -0.5;
-        double eCriteria = 0;
-        double fCriteria = 0.05;
-        double gCriteria = 0.2;
-        double hCriteria = 0.131;
-        double iCriteria = 0.331;
-        double kkCriteria = -0.052;
-        double lCriteria = -0.052;
-        double mCriteria = 0.13;
-        double nCriteria = 0.04;
+
 
         public void On_BodyFrameArrived(List<Body> bodies, int counter1)
         {

@@ -15,9 +15,9 @@ namespace RoomAliveToolkit
 {
     public class ProjectionMappingSample : ApplicationContext
     {
-        private int framesInMemory = 1000;
+        private int framesInMemory = 10000;
         public event FeedbackChangedHandler FeedbackChanged;
-        public delegate void FeedbackChangedHandler(int feedback, double headX, double headY);
+        public delegate void FeedbackChangedHandler(int bodyId, Kinect2SBody body, Tuple<PostureFeedback, int> feedbackTuple, float headX, float headY);
         public event SkeletonDrawingHandler SkeletonDrawing;
         public delegate void SkeletonDrawingHandler(Kinect2SBody body, PostureFrame postureFrame);
 
@@ -51,8 +51,30 @@ namespace RoomAliveToolkit
         {
             LegCrossed, Slouch, ShortDistance, Standard, BodyStationary, HeadStationary, ArmStationary, LegStationary, LowHeight
         }
+
+        public class User
+        {
+            private List<PostureFrame> postureFrames = new List<PostureFrame>();
+            public List<PostureFrame> PostureFrames
+            {
+                get
+                {
+                    return this.postureFrames;
+                }
+            }
+
+            private List<PostureFeedback> postureFeedbacks = new List<PostureFeedback>();
+            public List<PostureFeedback> PostureFeedbacks
+            {
+                get
+                {
+                    return this.postureFeedbacks;
+                }
+            }
+        }
+
         //1 2 3 4 5 6 7 8
-        Dictionary<ulong, List<PostureFrame>> userPostureFrames = new Dictionary<ulong, List<PostureFrame>>();
+        Dictionary<ulong, User> users = new Dictionary<ulong, User>();
 
         Dictionary<ulong, bool[]> userIsLowHeight = new Dictionary<ulong, bool[]>();
         Dictionary<ulong, bool[]> userIsGood = new Dictionary<ulong, bool[]>();
@@ -196,7 +218,7 @@ namespace RoomAliveToolkit
                 mainForm.VisibilityChanged += form.On_VisibilityChanged;
                 mainForm.ImageChanged += form.On_ImageChanged;
                 this.FeedbackChanged += form.On_FeedbackChanged;
-                this.SkeletonDrawing += form.On_SkeletonDrawing;
+                //this.SkeletonDrawing += form.On_SkeletonDrawing;
                 //this.kinectServer.BodyFrameArrived += form.On_BodyFrameArrived;
             }
 
@@ -220,9 +242,7 @@ namespace RoomAliveToolkit
 
             new System.Threading.Thread(RenderLoop).Start();
         }
-        PostureFeedback feedback = PostureFeedback.Standard;
-        int feedbackType;
-        int currentBodyCount;
+
         private void kinectServer_BodyFrameReceived(Kinect2SBodyFrame serializableBodyFrame)
         {
             if (serializableBodyFrame.Bodies.Count == 0)
@@ -231,30 +251,56 @@ namespace RoomAliveToolkit
                 return;
             }
 
-            currentBodyCount = serializableBodyFrame.Bodies.Count;
+            // remove users who disappear
+            List<ulong> trackingIds = new List<ulong>();
+            List<ulong> idsToRemove = new List<ulong>();
+            foreach (Kinect2SBody body in serializableBodyFrame.Bodies)
+            {
+                trackingIds.Add(body.TrackingId);
+            }
+            foreach (ulong userId in this.users.Keys)
+            {
+                if (!trackingIds.Contains(userId))
+                {
+                    idsToRemove.Add(userId);
+                }
+            }
+            foreach (ulong userId in idsToRemove)
+            {
+                this.users.Remove(userId);
+            }
 
+            int bodyId = 1;
             foreach (Kinect2SBody body in serializableBodyFrame.Bodies)
             {
                 ulong trackingId = body.TrackingId;
+
+                User user;
+                this.users.TryGetValue(trackingId, out user);
+
+                // new user
+                if (user == null)
+                {
+                    user = new User();
+                    this.users.Add(trackingId, user);
+                }
+
+                // todo fix
+                //this.SkeletonDrawing(body, postureFrame);
+
+                // resize posture frames and feedbacks list
+                if (user.PostureFrames.Count == this.framesInMemory)
+                {
+                    user.PostureFrames.RemoveRange(0, 9000);
+                }
+                if (user.PostureFeedbacks.Count == this.framesInMemory)
+                {
+                    user.PostureFeedbacks.RemoveRange(0, 9000);
+                }
+
+                // new posture frame
                 PostureFrame postureFrame = new PostureFrame();
-                this.SkeletonDrawing(body, postureFrame);
-
-                foreach (Kinect2SJoint joint in body.Joints.Values)
-                {
-                    postureFrame.Joints[joint.JointType] = joint.CameraSpacePoint;
-                }
-
-                if (!this.userPostureFrames.ContainsKey(body.TrackingId))
-                {
-                    this.userPostureFrames[trackingId] = new List<PostureFrame>(this.framesInMemory);
-                }
-
-                if (this.userPostureFrames[trackingId].Count == this.framesInMemory)
-                {
-                    this.userPostureFrames[trackingId].RemoveAt(0);
-                }
-
-                this.userPostureFrames[trackingId].Add(postureFrame);
+                user.PostureFrames.Add(postureFrame);
 
                 a = Math.Abs(body.Joints[JointType.FootLeft].CameraSpacePoint.Y - body.Joints[JointType.FootRight].CameraSpacePoint.Y);
                 b = body.Joints[JointType.KneeLeft].CameraSpacePoint.Y;
@@ -280,8 +326,8 @@ namespace RoomAliveToolkit
                          * (body.Joints[JointType.Neck].CameraSpacePoint.X - body.Joints[JointType.Head].CameraSpacePoint.X));
                 //distance
                 m = body.Joints[JointType.Head].CameraSpacePoint.Z;
-                double headX = body.Joints[JointType.Head].CameraSpacePoint.X;
-                double headY = body.Joints[JointType.Head].CameraSpacePoint.Y;
+                float headX = body.Joints[JointType.Head].CameraSpacePoint.X;
+                float headY = body.Joints[JointType.Head].CameraSpacePoint.Y;
 
                 if (a > aCriteria || ((d > dCriteria || c > cCriteria) && !(b > bCriteria && e > eCriteria)))
                 {
@@ -300,9 +346,10 @@ namespace RoomAliveToolkit
                     postureFrame.Postures.Add(Posture.Distance);
                 }
 
-                // posture feedback
-                int frameCount = this.userPostureFrames[trackingId].Count;
-                if (frameCount >= 60 && frameCount % 60 == 0)
+                // find posture feedback (default: standard)
+                PostureFeedback feedback = PostureFeedback.Standard;
+                int postureFrameCount = user.PostureFrames.Count;
+                if (postureFrameCount >= 60 && postureFrameCount % 60 == 0)
                 {
                     int legCount = 0;
                     int slouchCount = 0;
@@ -311,9 +358,9 @@ namespace RoomAliveToolkit
                     bool projectionStandard = true;
                     bool mobileGood = true;
 
-                    for (int p = frameCount - 60; p < frameCount; p++)
+                    for (int p = postureFrameCount - 60; p < postureFrameCount; p++)
                     {
-                        PostureFrame previousFrame = this.userPostureFrames[trackingId][p];
+                        PostureFrame previousFrame = user.PostureFrames[p];
 
                         if (previousFrame.Postures.Contains(Posture.Leg))
                         {
@@ -332,42 +379,37 @@ namespace RoomAliveToolkit
                             if (legCount > 40)
                             {
                                 feedback = PostureFeedback.LegCrossed;
-                                this.FeedbackChanged(1, headX, headY);
                             }
                             else if (slouchCount > 40)
                             {
                                 feedback = PostureFeedback.Slouch;
-                                this.FeedbackChanged(2, headX, headY);
                             }
                             else
                             {
                                 feedback = PostureFeedback.ShortDistance;
-                                this.FeedbackChanged(3, headX, headY);
                             }
                         }
-                        if (legCount > 40 || slouchCount > 40 || lowHeightCount > 40)
-                        {
-                            mobileGood = false;
-                            if (legCount > 40)
-                            {
-                                feedback = PostureFeedback.LegCrossed;
-                                this.FeedbackChanged(1, headX, headY);
-                            }
-                            else if (slouchCount > 40)
-                            {
-                                feedback = PostureFeedback.Slouch;
-                                this.FeedbackChanged(2, headX, headY);
-                            }
-                            else
-                            {
-                                feedback = PostureFeedback.LowHeight;
-                                this.FeedbackChanged(1, headX, headY);
-                            }
-                        }
+                        //if (legCount > 40 || slouchCount > 40 || lowHeightCount > 40)
+                        //{
+                        //    mobileGood = false;
+                        //    if (legCount > 40)
+                        //    {
+                        //        feedback = PostureFeedback.LegCrossed;
+                        //    }
+                        //    else if (slouchCount > 40)
+                        //    {
+                        //        feedback = PostureFeedback.Slouch;
+                        //    }
+                        //    else
+                        //    {
+                        //        feedback = PostureFeedback.LowHeight;
+                        //    }
+                        //}
                     }
+
                     if (feedback == PostureFeedback.Standard)
                     {
-                        if (this.userPostureFrames.Count >= 30 * 30)
+                        if (postureFrameCount >= 30 * 30)
                         {
                             int q = 0;
                             if (findSamePosture(armRegion, trackingId) || findSamePosture(legRegion, trackingId)
@@ -376,43 +418,28 @@ namespace RoomAliveToolkit
                                 if (findSamePosture(armRegion, trackingId))
                                 {
                                     feedback = PostureFeedback.ArmStationary;
-                                    this.FeedbackChanged(7, headX, headY);
                                     q++;
                                 }
                                 if (findSamePosture(legRegion, trackingId))
                                 {
                                     feedback = PostureFeedback.LegStationary;
-                                    this.FeedbackChanged(8, headX, headY);
                                     q++;
                                 }
                                 if (findSamePosture(trunkRegion, trackingId))
                                 {
                                     feedback = PostureFeedback.BodyStationary;
-                                    this.FeedbackChanged(5, headX, headY);
                                     q++;
                                 }
                                 if (findSamePosture(headRegion, trackingId))
                                 {
                                     feedback = PostureFeedback.HeadStationary;
-                                    this.FeedbackChanged(6, headX, headY);
                                     q++;
                                 }
                                 if (q >= 2)
                                 {
                                     feedback = PostureFeedback.BodyStationary;
-                                    this.FeedbackChanged(5, headX, headY);
                                 }
                             }
-                            else
-                            {
-                                feedback = PostureFeedback.Standard;
-                                this.FeedbackChanged(4, headX, headY);
-                            }
-                        }
-                        else
-                        {
-                            feedback = PostureFeedback.Standard;
-                            this.FeedbackChanged(4, headX, headY);
                         }
                     }
                     //if (mobileGood)
@@ -433,12 +460,39 @@ namespace RoomAliveToolkit
                     //        userIsGood[body.TrackingId][o / 60] = true;
                     //    }
                     //}
-                }
-            }
+
+                    user.PostureFeedbacks.Add(feedback);
+                    System.Diagnostics.Debug.WriteLine(feedback);
+
+                    // find posture feedback duration
+                    int duration = getFeedbackDuration(user);
+                    Tuple<PostureFeedback, int> feedbackTuple = new Tuple<PostureFeedback, int>(feedback, duration);
+                    this.FeedbackChanged(bodyId, body, feedbackTuple, headX, headY);
+                } // find posture feedback end
+                bodyId++;
+            } // body
         }
 
 
-
+        private int getFeedbackDuration(User user)
+        {
+            int feedbackDuration = 1;
+            int postureFeedbacksCount = user.PostureFeedbacks.Count;
+            PostureFeedback currentFeedback = user.PostureFeedbacks[postureFeedbacksCount - 1];
+            for (int i = postureFeedbacksCount - 2; i >= 0; i--)
+            {
+                PostureFeedback previousFeedback = user.PostureFeedbacks[i];
+                if (previousFeedback == currentFeedback)
+                {
+                    feedbackDuration++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return feedbackDuration;
+        }
 
         private List<Dictionary<JointType, CameraSpacePoint>> jointsHistory = new List<Dictionary<JointType, CameraSpacePoint>>();
         private void getPostureDuration(List<JointType> jtList, Kinect2SBody body)
@@ -457,14 +511,14 @@ namespace RoomAliveToolkit
 
         private bool findSamePosture(List<JointType> bodyRegion, ulong trackingId)
         {
-            List<PostureFrame> userPostureFrames = this.userPostureFrames[trackingId];
-            int frameCount = this.userPostureFrames.Count;
+            List<PostureFrame> userPostureFrames = this.users[trackingId].PostureFrames;
+            int postureFramesCount = userPostureFrames.Count;
 
-            PostureFrame currentFrame = userPostureFrames[frameCount - 1];
+            PostureFrame currentFrame = userPostureFrames[postureFramesCount - 1];
 
             int totalJointCount = 0;
             int sameJointCount = 0;
-            for (int i = frameCount - 1 - 900; i < frameCount; i++)
+            for (int i = postureFramesCount - 900; i < postureFramesCount - 1; i++)
             {
                 PostureFrame previousFrame = userPostureFrames[i];
                 foreach (JointType jtType in bodyRegion)
