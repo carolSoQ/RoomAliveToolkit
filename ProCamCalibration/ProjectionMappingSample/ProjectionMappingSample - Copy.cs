@@ -10,16 +10,21 @@ using System.Windows.Forms;
 using Microsoft.Kinect;
 using Kinect2Serializer;
 using Kinect2SimpleServer;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
 
 namespace RoomAliveToolkit
 {
     public class ProjectionMappingSample : ApplicationContext
     {
         private int framesInMemory = 10000;
-        public event FeedbackChangedHandler FeedbackChanged;
-        public delegate void FeedbackChangedHandler(int bodyId, Kinect2SBody body, Tuple<PostureFeedback, int> feedbackTuple, float headX, float headY);
-        public event SkeletonDrawingHandler SkeletonDrawing;
-        public delegate void SkeletonDrawingHandler(Kinect2SBody body, PostureFrame postureFrame);
+        public event FeedbackChangedHandler PFeedbackChanged;
+        public delegate void FeedbackChangedHandler(int bodyId, Kinect2SBody body, Tuple<ProjectionFeedback, int> pFeedbackTuple, float headX, float headY);
+        public event MobileFeedbackChangedHandler MFeedbackChanged;
+        public delegate void MobileFeedbackChangedHandler(int bodyId, Kinect2SBody body, Tuple<MobileFeedback, int> mFeedbackTuple, float headX, float headY);
+        public event ClockChangedHandler ClockChanged;
+        public delegate void ClockChangedHandler(List<int> goodUserCountRecord, List<int> badUserCountRecord);
 
         public enum Posture
         {
@@ -47,9 +52,14 @@ namespace RoomAliveToolkit
             }
         }
 
-        public enum PostureFeedback
+        public enum ProjectionFeedback
         {
-            LegCrossed, Slouch, ShortDistance, Standard, BodyStationary, HeadStationary, ArmStationary, LegStationary, LowHeight
+            LegCrossed, Slouch, ShortDistance, Standard, BodyStationary, HeadStationary, ArmStationary, LegStationary
+        }
+
+        public enum MobileFeedback
+        {
+            LegCrossed, Slouch, LowHeight, Good, BodyStationary, HeadStationary, ArmStationary, LegStationary
         }
 
         public class User
@@ -63,12 +73,21 @@ namespace RoomAliveToolkit
                 }
             }
 
-            private List<PostureFeedback> postureFeedbacks = new List<PostureFeedback>();
-            public List<PostureFeedback> PostureFeedbacks
+            private List<ProjectionFeedback> projectionFeedbacks = new List<ProjectionFeedback>();
+            public List<ProjectionFeedback> ProjectionFeedbacks
             {
                 get
                 {
-                    return this.postureFeedbacks;
+                    return this.projectionFeedbacks;
+                }
+            }
+
+            private List<MobileFeedback> mobileFeedbacks = new List<MobileFeedback>();
+            public List<MobileFeedback> MobileFeedbacks
+            {
+                get
+                {
+                    return this.mobileFeedbacks;
                 }
             }
         }
@@ -112,6 +131,8 @@ namespace RoomAliveToolkit
         private List<JointType> armRegion = new List<JointType>() { JointType.ShoulderLeft, JointType.ElbowLeft, JointType.WristLeft, JointType.HandLeft, JointType.ShoulderRight, JointType.ElbowRight, JointType.WristRight, JointType.HandRight };
         private List<JointType> trunkRegion = new List<JointType>() { JointType.ShoulderLeft, JointType.ShoulderRight, JointType.SpineShoulder, JointType.SpineBase, JointType.SpineMid };
         private List<JointType> legRegion = new List<JointType>() { JointType.KneeLeft, JointType.HipLeft, JointType.AnkleLeft, JointType.FootLeft, JointType.KneeRight, JointType.HipRight, JointType.AnkleRight, JointType.FootRight };
+        public List<int> goodPostureUserRecord = new List<int>();
+        public List<int> badPostureUserRecord = new List<int>();
         private Kinect2SimpleServer.Kinect2SimpleServer kinectServer;
 
         [STAThread]
@@ -217,8 +238,8 @@ namespace RoomAliveToolkit
                 MainForm mainForm = userViewForm as MainForm;
                 mainForm.VisibilityChanged += form.On_VisibilityChanged;
                 mainForm.ImageChanged += form.On_ImageChanged;
-                this.FeedbackChanged += form.On_FeedbackChanged;
-                //this.SkeletonDrawing += form.On_SkeletonDrawing;
+                this.PFeedbackChanged += form.On_FeedbackChanged;
+                this.ClockChanged += form.On_ClockedChanged;
                 //this.kinectServer.BodyFrameArrived += form.On_BodyFrameArrived;
             }
 
@@ -269,7 +290,8 @@ namespace RoomAliveToolkit
             {
                 this.users.Remove(userId);
             }
-
+            int goodPostureUser = 0;
+            int badPostureUser = 0;
             int bodyId = 1;
             foreach (Kinect2SBody body in serializableBodyFrame.Bodies)
             {
@@ -293,9 +315,9 @@ namespace RoomAliveToolkit
                 {
                     user.PostureFrames.RemoveRange(0, 9000);
                 }
-                if (user.PostureFeedbacks.Count == this.framesInMemory)
+                if (user.ProjectionFeedbacks.Count == this.framesInMemory)
                 {
-                    user.PostureFeedbacks.RemoveRange(0, 9000);
+                    user.ProjectionFeedbacks.RemoveRange(0, 9000);
                 }
 
                 // new posture frame
@@ -347,7 +369,8 @@ namespace RoomAliveToolkit
                 }
 
                 // find posture feedback (default: standard)
-                PostureFeedback feedback = PostureFeedback.Standard;
+                ProjectionFeedback pfeedback = ProjectionFeedback.Standard;
+                MobileFeedback mfeedback = MobileFeedback.Good;
                 int postureFrameCount = user.PostureFrames.Count;
                 if (postureFrameCount >= 60 && postureFrameCount % 60 == 0)
                 {
@@ -378,36 +401,35 @@ namespace RoomAliveToolkit
                         {
                             if (legCount > 40)
                             {
-                                feedback = PostureFeedback.LegCrossed;
+                                pfeedback = ProjectionFeedback.LegCrossed;
                             }
                             else if (slouchCount > 40)
                             {
-                                feedback = PostureFeedback.Slouch;
+                                pfeedback = ProjectionFeedback.Slouch;
                             }
                             else
                             {
-                                feedback = PostureFeedback.ShortDistance;
+                                pfeedback = ProjectionFeedback.ShortDistance;
                             }
                         }
-                        //if (legCount > 40 || slouchCount > 40 || lowHeightCount > 40)
-                        //{
-                        //    mobileGood = false;
-                        //    if (legCount > 40)
-                        //    {
-                        //        feedback = PostureFeedback.LegCrossed;
-                        //    }
-                        //    else if (slouchCount > 40)
-                        //    {
-                        //        feedback = PostureFeedback.Slouch;
-                        //    }
-                        //    else
-                        //    {
-                        //        feedback = PostureFeedback.LowHeight;
-                        //    }
-                        //}
+                        if (legCount > 40 || slouchCount > 40 || lowHeightCount > 40)
+                        {
+                            if (legCount > 40)
+                            {
+                                mfeedback = MobileFeedback.LegCrossed;
+                            }
+                            else if (slouchCount > 40)
+                            {
+                                mfeedback = MobileFeedback.Slouch;
+                            }
+                            else
+                            {
+                                mfeedback = MobileFeedback.LowHeight;
+                            }
+                        }
                     }
 
-                    if (feedback == PostureFeedback.Standard)
+                    if (pfeedback == ProjectionFeedback.Standard)
                     {
                         if (postureFrameCount >= 30 * 30)
                         {
@@ -417,71 +439,147 @@ namespace RoomAliveToolkit
                             {
                                 if (findSamePosture(armRegion, trackingId))
                                 {
-                                    feedback = PostureFeedback.ArmStationary;
+                                    pfeedback = ProjectionFeedback.ArmStationary;
                                     q++;
                                 }
                                 if (findSamePosture(legRegion, trackingId))
                                 {
-                                    feedback = PostureFeedback.LegStationary;
+                                    pfeedback = ProjectionFeedback.LegStationary;
                                     q++;
                                 }
                                 if (findSamePosture(trunkRegion, trackingId))
                                 {
-                                    feedback = PostureFeedback.BodyStationary;
+                                    pfeedback = ProjectionFeedback.BodyStationary;
                                     q++;
                                 }
                                 if (findSamePosture(headRegion, trackingId))
                                 {
-                                    feedback = PostureFeedback.HeadStationary;
+                                    pfeedback = ProjectionFeedback.HeadStationary;
                                     q++;
                                 }
                                 if (q >= 2)
                                 {
-                                    feedback = PostureFeedback.BodyStationary;
+                                    pfeedback = ProjectionFeedback.BodyStationary;
                                 }
                             }
                         }
                     }
-                    //if (mobileGood)
-                    //{
-                    //    if (o >= 30 * 30)
-                    //    {
-                    //        if (userIsStationary[body.TrackingId][o])
-                    //        {
-                    //            mobileGood = false;
-                    //        }
-                    //        else
-                    //        {
-                    //            userIsGood[body.TrackingId][o / 60] = true;
-                    //        }
-                    //    }
-                    //    else
-                    //    {
-                    //        userIsGood[body.TrackingId][o / 60] = true;
-                    //    }
-                    //}
+                    if (mfeedback == MobileFeedback.Good)
+                    {
+                        if (postureFrameCount >= 30 * 30)
+                        {
+                            int q = 0;
+                            if (findSamePosture(armRegion, trackingId) || findSamePosture(legRegion, trackingId)
+                                || findSamePosture(trunkRegion, trackingId) || findSamePosture(headRegion, trackingId))
+                            {
+                                if (findSamePosture(armRegion, trackingId))
+                                {
+                                    mfeedback = MobileFeedback.ArmStationary;
+                                    q++;
+                                }
+                                if (findSamePosture(legRegion, trackingId))
+                                {
+                                    mfeedback = MobileFeedback.LegStationary;
+                                    q++;
+                                }
+                                if (findSamePosture(trunkRegion, trackingId))
+                                {
+                                    mfeedback = MobileFeedback.BodyStationary;
+                                    q++;
+                                }
+                                if (findSamePosture(headRegion, trackingId))
+                                {
+                                    mfeedback = MobileFeedback.HeadStationary;
+                                    q++;
+                                }
+                                if (q >= 2)
+                                {
+                                    mfeedback = MobileFeedback.BodyStationary;
+                                }
+                            }
+                        }
+                    }
 
-                    user.PostureFeedbacks.Add(feedback);
-                    System.Diagnostics.Debug.WriteLine(feedback);
+
+                    user.ProjectionFeedbacks.Add(pfeedback);
+                    user.MobileFeedbacks.Add(mfeedback);
+                    //System.Diagnostics.Debug.WriteLine(pfeedback);
 
                     // find posture feedback duration
-                    int duration = getFeedbackDuration(user);
-                    Tuple<PostureFeedback, int> feedbackTuple = new Tuple<PostureFeedback, int>(feedback, duration);
-                    this.FeedbackChanged(bodyId, body, feedbackTuple, headX, headY);
+                    int pDuration = getPFeedbackDuration(user);
+                    Tuple<ProjectionFeedback, int> pFeedbackTuple = new Tuple<ProjectionFeedback, int>(pfeedback, pDuration);
+                    this.PFeedbackChanged(bodyId, body, pFeedbackTuple, headX, headY);
+                    
+
+                    int mDuration = getMFeedbackDuration(user);
+                    Tuple<MobileFeedback, int> mFeedbackTuple = new Tuple<MobileFeedback, int>(mfeedback, mDuration);
+                    this.SendPostureFeedbackToAndroid(bodyId, mFeedbackTuple);
+                    if (user.ProjectionFeedbacks[user.ProjectionFeedbacks.Count - 1] == ProjectionFeedback.Standard)
+                    {
+                        goodPostureUser++;
+                    }
+                    else
+                    {
+                        badPostureUser++;
+                    }
                 } // find posture feedback end
-                bodyId++;
+                bodyId++;             
             } // body
+            goodPostureUserRecord.Add(goodPostureUser);
+            badPostureUserRecord.Add(badPostureUser);
+            this.ClockChanged(goodPostureUserRecord, badPostureUserRecord);
+        }
+
+        private void SendPostureFeedbackToAndroid(int bodyId, Tuple<MobileFeedback, int> mFeedbackTuple)
+        {
+            try
+            {
+                string message = String.Format("{0}, {1}, {2}", bodyId, mFeedbackTuple.Item1, mFeedbackTuple.Item2);
+
+                TcpClient client = new TcpClient("138.251.207.116", 8080);
+                NetworkStream clientStream = client.GetStream();
+                
+                byte[] bytesToSend = Encoding.ASCII.GetBytes(message);
+                clientStream.Write(bytesToSend, 0, bytesToSend.Length);
+
+                clientStream.Close();
+                client.Close();
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.StackTrace);
+            }
         }
 
 
-        private int getFeedbackDuration(User user)
+        private int getPFeedbackDuration(User user)
         {
             int feedbackDuration = 1;
-            int postureFeedbacksCount = user.PostureFeedbacks.Count;
-            PostureFeedback currentFeedback = user.PostureFeedbacks[postureFeedbacksCount - 1];
+            int postureFeedbacksCount = user.ProjectionFeedbacks.Count;
+            ProjectionFeedback currentFeedback = user.ProjectionFeedbacks[postureFeedbacksCount - 1];
             for (int i = postureFeedbacksCount - 2; i >= 0; i--)
             {
-                PostureFeedback previousFeedback = user.PostureFeedbacks[i];
+                ProjectionFeedback previousFeedback = user.ProjectionFeedbacks[i];
+                if (previousFeedback == currentFeedback)
+                {
+                    feedbackDuration++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return feedbackDuration;
+        }
+
+        private int getMFeedbackDuration(User user)
+        {
+            int feedbackDuration = 1;
+            int postureFeedbacksCount = user.MobileFeedbacks.Count;
+            MobileFeedback currentFeedback = user.MobileFeedbacks[postureFeedbacksCount - 1];
+            for (int i = postureFeedbacksCount - 2; i >= 0; i--)
+            {
+                MobileFeedback previousFeedback = user.MobileFeedbacks[i];
                 if (previousFeedback == currentFeedback)
                 {
                     feedbackDuration++;
