@@ -544,13 +544,13 @@ namespace RoomAliveToolkit
             {
                 string message = String.Format("{0}, {1}, {2}", bodyId, mFeedbackTuple.Item1, mFeedbackTuple.Item2);
 
-                TcpClient client = new TcpClient("138.251.207.116", 8080);
-                NetworkStream clientStream = client.GetStream();
+                //TcpClient client = new TcpClient("138.251.207.116", 8080);
+                //NetworkStream clientStream = client.GetStream();
 
-                byte[] bytesToSend = Encoding.ASCII.GetBytes(message);
-                clientStream.Write(bytesToSend, 0, bytesToSend.Length);
-                clientStream.Close();
-                client.Close();
+                //byte[] bytesToSend = Encoding.ASCII.GetBytes(message);
+                //clientStream.Write(bytesToSend, 0, bytesToSend.Length);
+                //clientStream.Close();
+                //client.Close();
             }
             catch (Exception e)
             {

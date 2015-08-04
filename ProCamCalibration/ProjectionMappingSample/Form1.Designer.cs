@@ -72,9 +72,9 @@
             this.pictureBox2.ImageLocation = "H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\a" +
     "ngelClock.png";
             this.pictureBox2.InitialImage = null;
-            this.pictureBox2.Location = new System.Drawing.Point(733, 660);
+            this.pictureBox2.Location = new System.Drawing.Point(757, 691);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(533, 609);
+            this.pictureBox2.Size = new System.Drawing.Size(509, 578);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox2.TabIndex = 2;
             this.pictureBox2.TabStop = false;
@@ -86,9 +86,9 @@
             this.pictureBox3.ImageLocation = "H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\d" +
     "evilClock.png";
             this.pictureBox3.InitialImage = null;
-            this.pictureBox3.Location = new System.Drawing.Point(-49, 701);
+            this.pictureBox3.Location = new System.Drawing.Point(51, 746);
             this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(706, 710);
+            this.pictureBox3.Size = new System.Drawing.Size(665, 645);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox3.TabIndex = 3;
             this.pictureBox3.TabStop = false;
@@ -100,7 +100,7 @@
             this.label1.BackColor = System.Drawing.Color.Black;
             this.label1.Font = new System.Drawing.Font("Trebuchet MS", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label1.Location = new System.Drawing.Point(262, 701);
+            this.label1.Location = new System.Drawing.Point(247, 701);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(195, 81);
             this.label1.TabIndex = 4;
@@ -138,7 +138,7 @@
             this.tracking_face2.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.tracking_face2.Image = ((System.Drawing.Image)(resources.GetObject("tracking_face2.Image")));
             this.tracking_face2.InitialImage = ((System.Drawing.Image)(resources.GetObject("tracking_face2.InitialImage")));
-            this.tracking_face2.Location = new System.Drawing.Point(276, 341);
+            this.tracking_face2.Location = new System.Drawing.Point(277, 375);
             this.tracking_face2.Name = "tracking_face2";
             this.tracking_face2.Size = new System.Drawing.Size(100, 102);
             this.tracking_face2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -151,9 +151,9 @@
             this.bomb1.BackColor = System.Drawing.Color.Black;
             this.bomb1.Image = ((System.Drawing.Image)(resources.GetObject("bomb1.Image")));
             this.bomb1.InitialImage = ((System.Drawing.Image)(resources.GetObject("bomb1.InitialImage")));
-            this.bomb1.Location = new System.Drawing.Point(12, 130);
+            this.bomb1.Location = new System.Drawing.Point(-22, 72);
             this.bomb1.Name = "bomb1";
-            this.bomb1.Size = new System.Drawing.Size(110, 78);
+            this.bomb1.Size = new System.Drawing.Size(104, 78);
             this.bomb1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.bomb1.TabIndex = 9;
             this.bomb1.TabStop = false;
@@ -164,7 +164,7 @@
             this.bomb2.BackColor = System.Drawing.Color.Black;
             this.bomb2.Image = ((System.Drawing.Image)(resources.GetObject("bomb2.Image")));
             this.bomb2.InitialImage = ((System.Drawing.Image)(resources.GetObject("bomb2.InitialImage")));
-            this.bomb2.Location = new System.Drawing.Point(26, 300);
+            this.bomb2.Location = new System.Drawing.Point(-22, 144);
             this.bomb2.Name = "bomb2";
             this.bomb2.Size = new System.Drawing.Size(104, 83);
             this.bomb2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -177,9 +177,9 @@
             this.bomb5.BackColor = System.Drawing.Color.Black;
             this.bomb5.Image = ((System.Drawing.Image)(resources.GetObject("bomb5.Image")));
             this.bomb5.InitialImage = ((System.Drawing.Image)(resources.GetObject("bomb5.InitialImage")));
-            this.bomb5.Location = new System.Drawing.Point(101, 353);
+            this.bomb5.Location = new System.Drawing.Point(-9, 386);
             this.bomb5.Name = "bomb5";
-            this.bomb5.Size = new System.Drawing.Size(83, 81);
+            this.bomb5.Size = new System.Drawing.Size(81, 79);
             this.bomb5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.bomb5.TabIndex = 11;
             this.bomb5.TabStop = false;
@@ -190,9 +190,9 @@
             this.bomb4.BackColor = System.Drawing.Color.Black;
             this.bomb4.Image = ((System.Drawing.Image)(resources.GetObject("bomb4.Image")));
             this.bomb4.InitialImage = ((System.Drawing.Image)(resources.GetObject("bomb4.InitialImage")));
-            this.bomb4.Location = new System.Drawing.Point(81, 12);
+            this.bomb4.Location = new System.Drawing.Point(-5, 308);
             this.bomb4.Name = "bomb4";
-            this.bomb4.Size = new System.Drawing.Size(86, 75);
+            this.bomb4.Size = new System.Drawing.Size(77, 84);
             this.bomb4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.bomb4.TabIndex = 12;
             this.bomb4.TabStop = false;
@@ -203,9 +203,9 @@
             this.bomb3.BackColor = System.Drawing.Color.Black;
             this.bomb3.Image = ((System.Drawing.Image)(resources.GetObject("bomb3.Image")));
             this.bomb3.InitialImage = ((System.Drawing.Image)(resources.GetObject("bomb3.InitialImage")));
-            this.bomb3.Location = new System.Drawing.Point(0, 231);
+            this.bomb3.Location = new System.Drawing.Point(-9, 229);
             this.bomb3.Name = "bomb3";
-            this.bomb3.Size = new System.Drawing.Size(94, 73);
+            this.bomb3.Size = new System.Drawing.Size(81, 82);
             this.bomb3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.bomb3.TabIndex = 13;
             this.bomb3.TabStop = false;
@@ -216,7 +216,7 @@
             this.flower1.BackColor = System.Drawing.Color.Black;
             this.flower1.Image = ((System.Drawing.Image)(resources.GetObject("flower1.Image")));
             this.flower1.InitialImage = ((System.Drawing.Image)(resources.GetObject("flower1.InitialImage")));
-            this.flower1.Location = new System.Drawing.Point(1212, 157);
+            this.flower1.Location = new System.Drawing.Point(1287, 95);
             this.flower1.Name = "flower1";
             this.flower1.Size = new System.Drawing.Size(54, 51);
             this.flower1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -229,7 +229,7 @@
             this.flower5.BackColor = System.Drawing.Color.Black;
             this.flower5.Image = ((System.Drawing.Image)(resources.GetObject("flower5.Image")));
             this.flower5.InitialImage = ((System.Drawing.Image)(resources.GetObject("flower5.InitialImage")));
-            this.flower5.Location = new System.Drawing.Point(1191, 457);
+            this.flower5.Location = new System.Drawing.Point(1287, 426);
             this.flower5.Name = "flower5";
             this.flower5.Size = new System.Drawing.Size(54, 51);
             this.flower5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -242,7 +242,7 @@
             this.flower4.BackColor = System.Drawing.Color.Black;
             this.flower4.Image = ((System.Drawing.Image)(resources.GetObject("flower4.Image")));
             this.flower4.InitialImage = ((System.Drawing.Image)(resources.GetObject("flower4.InitialImage")));
-            this.flower4.Location = new System.Drawing.Point(1212, 392);
+            this.flower4.Location = new System.Drawing.Point(1287, 341);
             this.flower4.Name = "flower4";
             this.flower4.Size = new System.Drawing.Size(54, 51);
             this.flower4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -255,7 +255,7 @@
             this.flower3.BackColor = System.Drawing.Color.Black;
             this.flower3.Image = ((System.Drawing.Image)(resources.GetObject("flower3.Image")));
             this.flower3.InitialImage = ((System.Drawing.Image)(resources.GetObject("flower3.InitialImage")));
-            this.flower3.Location = new System.Drawing.Point(1251, 318);
+            this.flower3.Location = new System.Drawing.Point(1287, 260);
             this.flower3.Name = "flower3";
             this.flower3.Size = new System.Drawing.Size(54, 51);
             this.flower3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -268,7 +268,7 @@
             this.flower2.BackColor = System.Drawing.Color.Black;
             this.flower2.Image = ((System.Drawing.Image)(resources.GetObject("flower2.Image")));
             this.flower2.InitialImage = ((System.Drawing.Image)(resources.GetObject("flower2.InitialImage")));
-            this.flower2.Location = new System.Drawing.Point(1251, 231);
+            this.flower2.Location = new System.Drawing.Point(1287, 176);
             this.flower2.Name = "flower2";
             this.flower2.Size = new System.Drawing.Size(54, 51);
             this.flower2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -280,9 +280,9 @@
             // 
             this.goodPostureLabel.BackColor = System.Drawing.Color.Black;
             this.goodPostureLabel.Image = ((System.Drawing.Image)(resources.GetObject("goodPostureLabel.Image")));
-            this.goodPostureLabel.Location = new System.Drawing.Point(776, 176);
+            this.goodPostureLabel.Location = new System.Drawing.Point(906, 660);
             this.goodPostureLabel.Name = "goodPostureLabel";
-            this.goodPostureLabel.Size = new System.Drawing.Size(244, 153);
+            this.goodPostureLabel.Size = new System.Drawing.Size(343, 199);
             this.goodPostureLabel.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.goodPostureLabel.TabIndex = 19;
             this.goodPostureLabel.TabStop = false;
@@ -292,7 +292,7 @@
             // 
             this.badPostureLabel.BackColor = System.Drawing.Color.Black;
             this.badPostureLabel.Image = ((System.Drawing.Image)(resources.GetObject("badPostureLabel.Image")));
-            this.badPostureLabel.Location = new System.Drawing.Point(382, 332);
+            this.badPostureLabel.Location = new System.Drawing.Point(89, 691);
             this.badPostureLabel.Name = "badPostureLabel";
             this.badPostureLabel.Size = new System.Drawing.Size(253, 160);
             this.badPostureLabel.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -318,15 +318,15 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
             this.ClientSize = new System.Drawing.Size(1384, 1011);
-            this.Controls.Add(this.goodPostureLabel);
-            this.Controls.Add(this.tracking_face);
             this.Controls.Add(this.tracking_face2);
+            this.Controls.Add(this.tracking_face);
+            this.Controls.Add(this.bomb3);
+            this.Controls.Add(this.bomb1);
+            this.Controls.Add(this.bomb2);
+            this.Controls.Add(this.goodPostureLabel);
             this.Controls.Add(this.flower4);
             this.Controls.Add(this.flower5);
             this.Controls.Add(this.bomb4);
-            this.Controls.Add(this.bomb1);
-            this.Controls.Add(this.bomb3);
-            this.Controls.Add(this.bomb2);
             this.Controls.Add(this.bomb5);
             this.Controls.Add(this.badPostureLabel);
             this.Controls.Add(this.flower1);

@@ -166,22 +166,8 @@
         {
             current_good_user_count = a[a.Count-1];
             current_bad_user_count = d[d.Count-1];
-            if (goodPostureLabel.Visible)
-            {
-                this.goodPostureLabel.BeginInvoke((Action)(() =>
-                {
-                    goodPostureLabel.Visible = false;
-                    this.goodPostureLabel.Invalidate();
-                }));
-            }
-            if (a.Count >= 2 && a[a.Count - 1] > a[a.Count - 2])
-            {
-                this.goodPostureLabel.BeginInvoke((Action)(() =>
-                {
-                    goodPostureLabel.Visible = true;
-                    this.goodPostureLabel.Invalidate();
-                }));
-            }
+            System.Diagnostics.Debug.WriteLine(current_good_user_count);
+
             if (badPostureLabel.Visible)
             {
                 this.badPostureLabel.BeginInvoke((Action)(() =>
@@ -196,6 +182,23 @@
                 {
                     badPostureLabel.Visible = true;
                     this.badPostureLabel.Invalidate();
+                }));
+            }
+
+            if (goodPostureLabel.Visible)
+            {
+                this.goodPostureLabel.BeginInvoke((Action)(() =>
+                {
+                    goodPostureLabel.Visible = false;
+                    this.goodPostureLabel.Refresh();
+                }));
+            }
+            if (a.Count >= 2 && a[a.Count - 1] > a[a.Count - 2])
+            {
+                this.goodPostureLabel.BeginInvoke((Action)(() =>
+                {
+                    goodPostureLabel.Visible = true;
+                    this.goodPostureLabel.Refresh();
                 }));
             }
             if (angelShow && !devilShow && !angelRiseTimer.Enabled)
@@ -600,7 +603,7 @@
                 {
                     this.pictureBox3.BeginInvoke((Action)(() =>
                     {
-                        System.Diagnostics.Debug.WriteLine("devil appear");
+                        //System.Diagnostics.Debug.WriteLine("devil appear");
                         this.pictureBox3.Visible = true;
                         //this.pictureBox3.Invalidate();
                     }));
@@ -734,10 +737,11 @@
             viewport = new Viewport(0, 0, videoPanel1.Width, videoPanel1.Height, 0f, 1f);
         }
 
+   
         void panel1_Paint(object sender, PaintEventArgs e)
         {
             base.OnPaint(e);
-
+            Control c = sender as Control;
             Graphics g = e.Graphics;
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
@@ -747,35 +751,46 @@
                 IReadOnlyDictionary<JointType, Kinect2SJoint> joints = skeleton.Joints;
                 IDictionary<JointType, System.Drawing.Point> jointPoints = skeleton.JointPoints;
 
-                // Draw the bones
-                //foreach (var bone in this.bones)
-                //{
-                //    JointType jointtype0 = bone.Item1;
-                //    JointType jointtype1 = bone.Item2;
-                //    Kinect2SJoint joint0 = joints[jointtype0];
-                //    Kinect2SJoint joint1 = joints[jointtype1];
+                 //Draw the bones
+                foreach (var bone in this.bones)
+                {
+                    JointType jointtype0 = bone.Item1;
+                    JointType jointtype1 = bone.Item2;
+                    if (jointtype0 == null ||
+                        jointtype1 == null)
+                    {
+                        return;
+                    }
+                    Kinect2SJoint joint0 = joints[jointtype0];
+                    Kinect2SJoint joint1 = joints[jointtype1];
+                    int joint0X = jointPoints[jointtype0].X + 50;
+                    int joint0Y = jointPoints[jointtype0].Y;
+                    int joint1X = jointPoints[jointtype1].X + 50;
+                    int joint1Y = jointPoints[jointtype1].Y;
+                    System.Drawing.Point a = new System.Drawing.Point(jointPoints[jointtype0].X, jointPoints[jointtype0].Y);
+                    System.Drawing.Point b = new System.Drawing.Point(jointPoints[jointtype1].X, jointPoints[jointtype1].Y);
+                    // If we can't find either of these joints, exit
+                    //if (joint0.TrackingState == TrackingState.NotTracked ||
+                    //    joint1.TrackingState == TrackingState.NotTracked)
+                    //{
+                    //    return;
+                    //}
 
-                //    // If we can't find either of these joints, exit
-                //    if (joint0.TrackingState == TrackingState.NotTracked ||
-                //        joint1.TrackingState == TrackingState.NotTracked)
-                //    {
-                //        return;
-                //    }
+                    // We assume all drawn bones are inferred unless both joints are tracked
+                    Pen drawpen = this.inferredBonePen;
 
-                //    // We assume all drawn bones are inferred unless both joints are tracked
-                //    Pen drawpen = this.inferredBonePen;
-                //    if ((joint0.TrackingState == TrackingState.Tracked) && (joint1.TrackingState == TrackingState.Tracked))
-                //    {
-                //        drawpen = skeleton.DrawingPen;
-                //    }
+                    //if ((joint0.TrackingState == TrackingState.Tracked) && (joint1.TrackingState == TrackingState.Tracked))
+                    //{
+                        drawpen = skeleton.DrawingPen;
+                    //}
 
-                //    g.DrawLine(drawpen, jointPoints[jointtype0], jointPoints[jointtype1]);
-                //} // bones
+                    g.DrawLine(drawpen, a, b);
+                } // bones
 
-                // Draw the joints
+                 //Draw the joints
                 foreach (JointType jointType in joints.Keys)
                 {
-                    int jointX = jointPoints[jointType].X;
+                    int jointX = jointPoints[jointType].X + 50;
                     int jointY = jointPoints[jointType].Y;
                     //System.Diagnostics.Debug.WriteLine("joint: " + jointType + " x: " + jointX + " y: " + jointY);
                     if (skeleton.Feedback == ProjectionMappingSample.ProjectionFeedback.LegCrossed || skeleton.Feedback == ProjectionMappingSample.ProjectionFeedback.LegStationary)
@@ -836,8 +851,13 @@
                     }
                 } // joints
             } // skeletons
+            //c.Invalidate();
         }
 
+        //protected override void OnPaint(PaintEventArgs e)
+        //{
+        //    base.OnPaint(e);
+        //}
         public void On_BodyAmountCounted(int bodyAmount)
         {
 
@@ -1087,13 +1107,13 @@
                     }
                     else if (currentBadToken == 4)
                     {
-                        bomb1.Visible = false;
-                        bomb1.Refresh();
+                        bomb4.Visible = false;
+                        bomb4.Refresh();
                     }
                     else if (currentBadToken == 3)
                     {
-                        bomb4.Visible = false;
-                        bomb4.Refresh();
+                        bomb3.Visible = false;
+                        bomb3.Refresh();
                     }
                     else if (currentBadToken == 2)
                     {
@@ -1102,8 +1122,8 @@
                     }
                     else
                     {
-                        bomb3.Visible = false;
-                        bomb3.Refresh();
+                        bomb1.Visible = false;
+                        bomb1.Refresh();
                         
                     }
                     currentBadToken--;
@@ -1445,22 +1465,6 @@
 
         public void On_BodyFrameArrived(List<Body> bodies, int counter1)
         {
-            //foreach(Body body in bodies)
-            //{
-            //    for(int o=60; o<counter1; o+=60)
-            //    {
-            //        int legCrossedCount =0;
-            //        int slouchCount =0;
-            //        int standartCount =0;
-            //        int standardViewingHeightCount =0;
-            //        for(int p=o-60; p<counter1; p++)
-            //        {
-            //            if()
-            //        }
-            //    }
-
-            //}
-
         }
 
     }
