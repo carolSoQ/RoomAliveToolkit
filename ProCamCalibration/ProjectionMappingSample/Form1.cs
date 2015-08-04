@@ -205,7 +205,7 @@
                     this.pictureBox2.BeginInvoke((Action)(() =>
                     {
                         pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock_witheredFlower.png");
-                        this.pictureBox2.Invalidate();
+                        //this.pictureBox2.Invalidate();
                     }));
                     this.BeginInvoke((Action)(() =>
                     {
@@ -218,7 +218,7 @@
                     this.pictureBox2.BeginInvoke((Action)(() =>
                     {
                         pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock1_flower.png");
-                        this.pictureBox2.Invalidate();
+                        //this.pictureBox2.Invalidate();
                     }));
                     this.BeginInvoke((Action)(() =>
                     {
@@ -231,7 +231,7 @@
                     this.pictureBox2.BeginInvoke((Action)(() =>
                     {
                         pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock2_flower.png");
-                        this.pictureBox2.Invalidate();
+                        //this.pictureBox2.Invalidate();
                     }));
                     this.BeginInvoke((Action)(() =>
                     {
@@ -244,7 +244,7 @@
                     this.pictureBox2.BeginInvoke((Action)(() =>
                     {
                         pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock3_flower.png");
-                        this.pictureBox2.Invalidate();
+                        //this.pictureBox2.Invalidate();
                     }));
                     this.BeginInvoke((Action)(() =>
                     {
@@ -260,7 +260,7 @@
                     this.pictureBox3.BeginInvoke((Action)(() =>
                     {
                         pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devillClock.png");
-                        this.pictureBox3.Invalidate();
+                        //this.pictureBox3.Invalidate();
                     }));
                     this.BeginInvoke((Action)(() =>
                     {
@@ -273,7 +273,7 @@
                     this.pictureBox3.BeginInvoke((Action)(() =>
                     {
                         pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devillClock1.png");
-                        this.pictureBox3.Invalidate();
+                        //this.pictureBox3.Invalidate();
                     }));
                     this.BeginInvoke((Action)(() =>
                     {
@@ -286,7 +286,7 @@
                     this.pictureBox3.BeginInvoke((Action)(() =>
                     {
                         pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devillClock2.png");
-                        this.pictureBox3.Invalidate();
+                        //this.pictureBox3.Invalidate();
                     }));
                     this.BeginInvoke((Action)(() =>
                     {
@@ -299,7 +299,7 @@
                     this.pictureBox3.BeginInvoke((Action)(() =>
                     {
                         pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devillClock3.png");
-                        this.pictureBox3.Invalidate();
+                        //this.pictureBox3.Invalidate();
                     }));
                     this.BeginInvoke((Action)(() =>
                     {
@@ -315,7 +315,7 @@
                     this.pictureBox2.BeginInvoke((Action)(() =>
                     {
                         pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock.png");
-                        this.pictureBox2.Invalidate();
+                        //this.pictureBox2.Invalidate();
                     }));
                     this.BeginInvoke((Action)(() =>
                     {
@@ -327,7 +327,7 @@
                         this.pictureBox3.BeginInvoke((Action)(() =>
                         {
                             pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock.png");
-                            this.pictureBox3.Invalidate();
+                            //this.pictureBox3.Invalidate();
                         }));
                         this.BeginInvoke((Action)(() =>
                         {
@@ -340,7 +340,7 @@
                         this.pictureBox3.BeginInvoke((Action)(() =>
                         {
                             pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock1.png");
-                            this.pictureBox3.Invalidate();
+                            //this.pictureBox3.Invalidate();
                         }));
                         this.BeginInvoke((Action)(() =>
                         {
@@ -353,7 +353,7 @@
                         this.pictureBox3.BeginInvoke((Action)(() =>
                         {
                             pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock2.png");
-                            this.pictureBox3.Invalidate();
+                            //this.pictureBox3.Invalidate();
                         }));
                         this.BeginInvoke((Action)(() =>
                         {
@@ -366,7 +366,7 @@
                         this.pictureBox3.BeginInvoke((Action)(() =>
                         {
                             pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock3.png");
-                            this.pictureBox3.Invalidate();
+                            //this.pictureBox3.Invalidate();
                         }));
                         this.BeginInvoke((Action)(() =>
                         {
@@ -381,7 +381,7 @@
                     this.pictureBox2.BeginInvoke((Action)(() =>
                     {
                         pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock1.png");
-                        this.pictureBox2.Invalidate();
+                        //this.pictureBox2.Invalidate();
                     }));
                     this.BeginInvoke((Action)(() =>
                     {
@@ -393,7 +393,7 @@
                         this.pictureBox3.BeginInvoke((Action)(() =>
                         {
                             pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock.png");
-                            this.pictureBox3.Invalidate();
+                            //this.pictureBox3.Invalidate();
                         }));
                         this.BeginInvoke((Action)(() =>
                         {
@@ -406,7 +406,7 @@
                         this.pictureBox3.BeginInvoke((Action)(() =>
                         {
                             pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock1.png");
-                            this.pictureBox3.Invalidate();
+                            //this.pictureBox3.Invalidate();
                         }));
                         this.BeginInvoke((Action)(() =>
                         {
@@ -419,7 +419,7 @@
                         this.pictureBox3.BeginInvoke((Action)(() =>
                         {
                             pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock2.png");
-                            this.pictureBox3.Invalidate();
+                            //this.pictureBox3.Invalidate();
                         }));
                         this.BeginInvoke((Action)(() =>
                         {
@@ -432,7 +432,7 @@
                         this.pictureBox3.BeginInvoke((Action)(() =>
                         {
                             pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock3.png");
-                            this.pictureBox3.Invalidate();
+                            //this.pictureBox3.Invalidate();
                         }));
                         this.BeginInvoke((Action)(() =>
                         {
@@ -446,7 +446,7 @@
                     this.pictureBox2.BeginInvoke((Action)(() =>
                     {
                         pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock2.png");
-                        this.pictureBox2.Invalidate();
+                        //this.pictureBox2.Invalidate();
                     }));
                     this.BeginInvoke((Action)(() =>
                     {
@@ -458,7 +458,7 @@
                         this.pictureBox3.BeginInvoke((Action)(() =>
                         {
                             pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock.png");
-                            this.pictureBox3.Invalidate();
+                            //this.pictureBox3.Invalidate();
                         }));
                         this.BeginInvoke((Action)(() =>
                         {
@@ -471,7 +471,7 @@
                         this.pictureBox3.BeginInvoke((Action)(() =>
                         {
                             pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock1.png");
-                            this.pictureBox3.Invalidate();
+                            //this.pictureBox3.Invalidate();
                         }));
                         this.BeginInvoke((Action)(() =>
                         {
@@ -484,7 +484,7 @@
                         this.pictureBox3.BeginInvoke((Action)(() =>
                         {
                             pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock2.png");
-                            this.pictureBox3.Invalidate();
+                            //this.pictureBox3.Invalidate();
                         }));
                         this.BeginInvoke((Action)(() =>
                         {
@@ -497,7 +497,7 @@
                         this.pictureBox3.BeginInvoke((Action)(() =>
                         {
                             pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock3.png");
-                            this.pictureBox3.Invalidate();
+                            //this.pictureBox3.Invalidate();
                         }));
                         this.BeginInvoke((Action)(() =>
                         {
@@ -511,7 +511,7 @@
                     this.pictureBox2.BeginInvoke((Action)(() =>
                     {
                         pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock3.png");
-                        this.pictureBox2.Invalidate();
+                        //this.pictureBox2.Invalidate();
                     }));
                     this.BeginInvoke((Action)(() =>
                     {
@@ -523,7 +523,7 @@
                         this.pictureBox3.BeginInvoke((Action)(() =>
                         {
                             pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock.png");
-                            this.pictureBox3.Invalidate();
+                            //this.pictureBox3.Invalidate();
                         }));
                         this.BeginInvoke((Action)(() =>
                         {
@@ -536,7 +536,7 @@
                         this.pictureBox3.BeginInvoke((Action)(() =>
                         {
                             pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock1.png");
-                            this.pictureBox3.Invalidate();
+                            //this.pictureBox3.Invalidate();
                         }));
                         this.BeginInvoke((Action)(() =>
                         {
@@ -549,7 +549,7 @@
                         this.pictureBox3.BeginInvoke((Action)(() =>
                         {
                             pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock2.png");
-                            this.pictureBox3.Invalidate();
+                            //this.pictureBox3.Invalidate();
                         }));
                         this.BeginInvoke((Action)(() =>
                         {
@@ -562,7 +562,7 @@
                         this.pictureBox3.BeginInvoke((Action)(() =>
                         {
                             pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock3.png");
-                            this.pictureBox3.Invalidate();
+                            //this.pictureBox3.Invalidate();
                         }));
                         this.BeginInvoke((Action)(() =>
                         {
@@ -581,7 +581,7 @@
                     this.pictureBox2.BeginInvoke((Action)(() =>
                     {
                         this.pictureBox2.Visible = true;
-                        this.pictureBox2.Invalidate();
+                        //this.pictureBox2.Invalidate();
                     }));
 
                     this.BeginInvoke((Action)(() =>
@@ -602,7 +602,7 @@
                     {
                         System.Diagnostics.Debug.WriteLine("devil appear");
                         this.pictureBox3.Visible = true;
-                        this.pictureBox3.Invalidate();
+                        //this.pictureBox3.Invalidate();
                     }));
 
                     this.BeginInvoke((Action)(() =>
@@ -626,7 +626,7 @@
                 label1.Visible = false;
                 label1.Invalidate();
                 pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock1.png");
-                pictureBox3.Invalidate();
+                //pictureBox3.Invalidate();
                 devilTimer = new Timer();
                 devilTimer.Tick += devilTimer_Tick;
                 devilTimer.Interval = 1000;
@@ -662,7 +662,7 @@
                 label2.Visible = false;
                 label2.Invalidate();
                 pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock1.png");
-                pictureBox2.Invalidate();
+                //pictureBox2.Invalidate();
                 angelTimer = new Timer();
                 angelTimer.Tick += angelTimer_Tick;
                 angelTimer.Interval = 1000;
@@ -1375,143 +1375,6 @@
             this.projector = projector;
             Text = "Projector " + projector.name;
         }
-
-        //public void On_ImageChanged(string type, int num)
-        //{
-        //    switch (type)
-        //    {
-        //        case "devil":
-        //            {
-        //                if (num == 3)
-        //                {
-        //                    pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock3.png");
-        //                    devilTimer.Start();
-        //                    devilTimerWatch.Start();
-        //                }
-        //                else if (num == 2)
-        //                {
-        //                    pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock2.png");
-        //                    devilTimer.Start();
-        //                    devilTimerWatch.Start();
-        //                }
-        //                else if (num == 1)
-        //                {
-        //                    pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock1.png");
-        //                    devilTimer.Start();
-        //                    devilTimerWatch.Start();
-        //                }
-        //                else
-        //                {
-        //                    pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock.png");
-        //                    devilTimer.Stop();
-        //                    devilTimerWatch.Stop();
-        //                }
-        //                current_bad_user_count = num;
-        //                if (current_bad_user_count > badUserCount)
-        //                {
-        //                    int pb3Height = pictureBox3.Size.Height;
-        //                    int pb3Width = pictureBox3.Size.Width;
-        //                    pictureBox3.Height = (int)(pb3Height * 1.15);
-        //                    pictureBox3.Width = (int)(pb3Width * 1.15);
-
-        //                }
-        //                else if (current_bad_user_count < badUserCount)
-        //                {
-        //                    pictureBox3.Height = (int)(pictureBox3.Size.Height / 1.15);
-        //                    pictureBox3.Width = (int)(pictureBox3.Size.Width / 1.15);
-
-        //                }
-        //                System.Diagnostics.Debug.WriteLine(current_bad_user_count);
-        //                break;
-        //            }
-        //        case "angel":
-        //            {
-        //                if (num == 3)
-        //                {
-        //                    pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock3.png");
-        //                    angelTimer.Start();
-        //                    angelTimerWatch.Start();
-        //                }
-        //                else if (num == 2)
-        //                {
-        //                    pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock2.png");
-        //                    angelTimer.Start();
-        //                    angelTimerWatch.Start();
-        //                }
-        //                else if (num == 1)
-        //                {
-        //                    pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock1.png");
-        //                    angelTimer.Start();
-        //                    angelTimerWatch.Start();
-        //                }
-        //                else
-        //                {
-        //                    pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock.png");
-        //                    angelTimer.Stop();
-        //                    angelTimerWatch.Stop();
-        //                }
-        //                current_good_user_count = num;
-        //                if ((pictureBox2.Image.Equals(Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock1_flower.png"))
-        //                    || pictureBox2.Image.Equals(Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock2_flower.png"))
-        //                    || pictureBox2.Image.Equals(Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock3_flower.png")))
-        //                    && (current_good_user_count < goodUserCount))
-        //                {
-        //                    if (current_good_user_count == 2)
-        //                    {
-        //                        pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock2_witheredFlower.png");
-        //                    }
-        //                    else if (current_good_user_count == 1)
-        //                    {
-        //                        pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock1_witheredFlower.png");
-        //                    }
-        //                    else
-        //                    {
-        //                        pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock_witheredFlower.png");
-        //                    }
-        //                }
-        //                goodUserCount = current_good_user_count;
-        //                break;
-        //            }
-        //        default:
-        //            break;
-        //    }
-        //}
-
-
-
-
-        //public void On_VisibilityChanged(bool b, int id)
-        //{
-        //switch (id)
-        //{
-        //    case Devil_Picture_Box:
-        //        {
-        //            this.pictureBox3.Visible = b;
-        //            this.pictureBox3.Invalidate();
-        //            devilRiseTimer = new Timer();
-        //            devilRiseTimer.Tick += devilRiseTimer_Tick;
-        //            devilRiseTimer.Interval = 170; // milliseconds
-        //            devilRiseWatch = new Stopwatch();
-        //            devilRiseTimer.Start();
-        //            devilRiseWatch.Start();
-        //            break;
-        //        }
-        //    case Angel_Picture_Box:
-        //        {
-        //            this.pictureBox2.Visible = b;
-        //            this.pictureBox2.Invalidate();
-        //            angelRiseTimer = new Timer();
-        //            angelRiseTimer.Tick += angelRiseTimer_Tick;
-        //            angelRiseTimer.Interval = 170; // milliseconds
-        //            angelRiseWatch = new Stopwatch();
-        //            angelRiseTimer.Start();
-        //            angelRiseWatch.Start();
-        //            break;
-        //        }
-        //    default:
-        //        break;
-        //}
-        //}
 
         public bool FullScreen
         {

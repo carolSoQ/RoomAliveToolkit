@@ -318,6 +318,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
             this.ClientSize = new System.Drawing.Size(1384, 1011);
+            this.Controls.Add(this.goodPostureLabel);
+            this.Controls.Add(this.tracking_face);
+            this.Controls.Add(this.tracking_face2);
             this.Controls.Add(this.flower4);
             this.Controls.Add(this.flower5);
             this.Controls.Add(this.bomb4);
@@ -325,17 +328,14 @@
             this.Controls.Add(this.bomb3);
             this.Controls.Add(this.bomb2);
             this.Controls.Add(this.bomb5);
-            this.Controls.Add(this.tracking_face2);
-            this.Controls.Add(this.tracking_face);
             this.Controls.Add(this.badPostureLabel);
-            this.Controls.Add(this.goodPostureLabel);
             this.Controls.Add(this.flower1);
             this.Controls.Add(this.flower2);
             this.Controls.Add(this.flower3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.pictureBox3);
             this.Controls.Add(this.pictureBox2);
+            this.Controls.Add(this.pictureBox3);
             this.Controls.Add(this.videoPanel1);
             this.Name = "Form1";
             this.Text = "Form1";
