@@ -40,52 +40,52 @@ namespace RoomAliveToolkit
 
         private void badPostrureDetected_Click(object sender, EventArgs e)
         {
-            this.VisibilityChanged(true, 1);
+            //this.VisibilityChanged(true, 1);
         }
 
         private void goodPostureDetected_Click(object sender, EventArgs e)
         {
-            this.VisibilityChanged(true, 2);
+            //this.VisibilityChanged(true, 2);
         }
 
         private void bad1_Click(object sender, EventArgs e)
         {
-            this.ImageChanged("devil", 1);
+            //this.ImageChanged("devil", 1);
         }
 
         private void bad2_Click(object sender, EventArgs e)
         {
-            this.ImageChanged("devil", 2);
+            //this.ImageChanged("devil", 2);
         }
 
         private void bad3_Click(object sender, EventArgs e)
         {
-            this.ImageChanged("devil", 3);
+            //this.ImageChanged("devil", 3);
         }
 
         private void good1_Click(object sender, EventArgs e)
         {
-            this.ImageChanged("angel", 1);
+            //this.ImageChanged("angel", 1);
         }
 
         private void good2_Click(object sender, EventArgs e)
         {
-            this.ImageChanged("angel", 2);
+            //this.ImageChanged("angel", 2);
         }
 
         private void good3_Click(object sender, EventArgs e)
         {
-            this.ImageChanged("angel", 3);
+            //this.ImageChanged("angel", 3);
         }
 
         private void good0_Click(object sender, EventArgs e)
         {
-            this.ImageChanged("angel", 0);
+            //this.ImageChanged("angel", 0);
         }
 
         private void bad0_Click(object sender, EventArgs e)
         {
-            this.ImageChanged("devil", 0);
+            //this.ImageChanged("devil", 0);
         }
 
     }

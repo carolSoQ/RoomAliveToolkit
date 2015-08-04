@@ -37,6 +37,7 @@
         private List<JointType> leftLegRegion = new List<JointType>() { JointType.KneeLeft, JointType.HipLeft, JointType.AnkleLeft, JointType.FootLeft };
         private List<JointType> rightLegRegion = new List<JointType>() { JointType.KneeRight, JointType.HipRight, JointType.AnkleRight, JointType.FootRight };
 
+
         bool angelShow = false;
         bool devilShow = false;
 
@@ -82,6 +83,16 @@
               , true);
 
             this.videoPanel1.Paint += panel1_Paint;
+
+            angelRiseTimer = new Timer();
+            angelRiseTimer.Tick += angelRiseTimer_Tick;
+            angelRiseTimer.Interval = 170; // milliseconds
+            angelRiseWatch = new Stopwatch();
+
+            devilRiseTimer = new Timer();
+            devilRiseTimer.Tick += devilRiseTimer_Tick;
+            devilRiseTimer.Interval = 170; // milliseconds
+            devilRiseWatch = new Stopwatch();
         }
 
         public void createSkeleton()
@@ -134,47 +145,547 @@
             this.bodyColors.Add(new Pen(Brushes.Plum, 6));
             this.bodyColors.Add(new Pen(Brushes.Pink, 6));
         }
-        
- 
+
+        bool devilPicture1 = true;
+        Timer devilRiseTimer;
+        Stopwatch devilRiseWatch;
+
+        bool angelPicture1 = true;
+        Timer angelRiseTimer;
+        Stopwatch angelRiseWatch;
+
+        Timer devilTimer;
+        Timer angelTimer;
+        Stopwatch angelTimerWatch;
+        Stopwatch devilTimerWatch;
+
+        public int current_bad_user_count = 0;
+        public int current_good_user_count = 0;
+
         public void On_ClockedChanged(List<int> a, List<int> d)
         {
-            //if (angelShow == false)
-            //{
-            //    if (a[a.Count - 1] != 0)
-            //    {
-            //        angelShow = true;
-            //        this.pictureBox2.Visible = true;
-            //        this.pictureBox2.Invalidate();
-            //        angelRiseTimer = new Timer();
-            //        angeRiseTimer.Tick += angelRiseTimer_Tick;
-            //        angelRiseTimer.Interval = 170; // milliseconds
-            //        angelRiseWatch = new Stopwatch();
-            //        angelRiseTimer.Start();
-            //        angelRiseWatch.Start();
-            //    }
-            //}
-            //else
-            //{
-            //    if (a[a.Count - 1] == 0 && d[d.Count-1]>0)
-            //    {
+            current_good_user_count = a[a.Count-1];
+            current_bad_user_count = d[d.Count-1];
+            if (goodPostureLabel.Visible)
+            {
+                this.goodPostureLabel.BeginInvoke((Action)(() =>
+                {
+                    goodPostureLabel.Visible = false;
+                    this.goodPostureLabel.Invalidate();
+                }));
+            }
+            if (a.Count >= 2 && a[a.Count - 1] > a[a.Count - 2])
+            {
+                this.goodPostureLabel.BeginInvoke((Action)(() =>
+                {
+                    goodPostureLabel.Visible = true;
+                    this.goodPostureLabel.Invalidate();
+                }));
+            }
+            if (badPostureLabel.Visible)
+            {
+                this.badPostureLabel.BeginInvoke((Action)(() =>
+                {
+                    badPostureLabel.Visible = false;
+                    this.badPostureLabel.Invalidate();
+                }));
+            }
+            if (d.Count >= 2 && d[d.Count - 1] > d[d.Count - 2])
+            {
+                this.badPostureLabel.BeginInvoke((Action)(() =>
+                {
+                    badPostureLabel.Visible = true;
+                    this.badPostureLabel.Invalidate();
+                }));
+            }
+            if (angelShow && !devilShow && !angelRiseTimer.Enabled)
+            {
+                if (a[a.Count-1] == 0)
+                {
+                    this.pictureBox2.BeginInvoke((Action)(() =>
+                    {
+                        pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock_witheredFlower.png");
+                        this.pictureBox2.Invalidate();
+                    }));
+                    this.BeginInvoke((Action)(() =>
+                    {
+                        angelTimer.Stop();
+                        angelTimerWatch.Stop();
+                    }));
+                }
+                else if (a[a.Count-1] == 1)
+                {
+                    this.pictureBox2.BeginInvoke((Action)(() =>
+                    {
+                        pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock1_flower.png");
+                        this.pictureBox2.Invalidate();
+                    }));
+                    this.BeginInvoke((Action)(() =>
+                    {
+                        angelTimer.Start();
+                        angelTimerWatch.Start();
+                    }));
+                }
+                else if (a[a.Count-1] == 2)
+                {
+                    this.pictureBox2.BeginInvoke((Action)(() =>
+                    {
+                        pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock2_flower.png");
+                        this.pictureBox2.Invalidate();
+                    }));
+                    this.BeginInvoke((Action)(() =>
+                    {
+                        angelTimer.Start();
+                        angelTimerWatch.Start();
+                    }));
+                }
+                else
+                {
+                    this.pictureBox2.BeginInvoke((Action)(() =>
+                    {
+                        pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock3_flower.png");
+                        this.pictureBox2.Invalidate();
+                    }));
+                    this.BeginInvoke((Action)(() =>
+                    {
+                        angelTimer.Start();
+                        angelTimerWatch.Start();
+                    }));
+                }
+            }
+            else if (!angelShow && devilShow && !devilRiseTimer.Enabled)
+            {
+                if (d[d.Count-1] == 0)
+                {
+                    this.pictureBox3.BeginInvoke((Action)(() =>
+                    {
+                        pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devillClock.png");
+                        this.pictureBox3.Invalidate();
+                    }));
+                    this.BeginInvoke((Action)(() =>
+                    {
+                        devilTimer.Stop();
+                        devilTimerWatch.Stop();
+                    }));
+                }
+                else if (d[d.Count-1] == 1)
+                {
+                    this.pictureBox3.BeginInvoke((Action)(() =>
+                    {
+                        pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devillClock1.png");
+                        this.pictureBox3.Invalidate();
+                    }));
+                    this.BeginInvoke((Action)(() =>
+                    {
+                        devilTimer.Start();
+                        devilTimerWatch.Start();
+                    }));
+                }
+                else if (d[d.Count-1] == 2)
+                {
+                    this.pictureBox3.BeginInvoke((Action)(() =>
+                    {
+                        pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devillClock2.png");
+                        this.pictureBox3.Invalidate();
+                    }));
+                    this.BeginInvoke((Action)(() =>
+                    {
+                        devilTimer.Start();
+                        devilTimerWatch.Start();
+                    }));
+                }
+                else
+                {
+                    this.pictureBox3.BeginInvoke((Action)(() =>
+                    {
+                        pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devillClock3.png");
+                        this.pictureBox3.Invalidate();
+                    }));
+                    this.BeginInvoke((Action)(() =>
+                    {
+                        devilTimer.Start();
+                        devilTimerWatch.Start();
+                    }));
+                }
+            }
+            else if (angelShow && devilShow && !angelRiseTimer.Enabled && !devilRiseTimer.Enabled)
+            {
+                if (a[a.Count-1] == 0)
+                {
+                    this.pictureBox2.BeginInvoke((Action)(() =>
+                    {
+                        pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock.png");
+                        this.pictureBox2.Invalidate();
+                    }));
+                    this.BeginInvoke((Action)(() =>
+                    {
+                        angelTimer.Stop();
+                        angelTimerWatch.Stop();
+                    }));
+                    if (d[d.Count - 1] == 0)
+                    {
+                        this.pictureBox3.BeginInvoke((Action)(() =>
+                        {
+                            pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock.png");
+                            this.pictureBox3.Invalidate();
+                        }));
+                        this.BeginInvoke((Action)(() =>
+                        {
+                            devilTimer.Stop();
+                            devilTimerWatch.Stop();
+                        }));
+                    }
+                    else if (d[d.Count - 1] == 1)
+                    {
+                        this.pictureBox3.BeginInvoke((Action)(() =>
+                        {
+                            pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock1.png");
+                            this.pictureBox3.Invalidate();
+                        }));
+                        this.BeginInvoke((Action)(() =>
+                        {
+                            devilTimer.Start();
+                            devilTimerWatch.Start();
+                        }));
+                    }
+                    else if (d[d.Count - 1] == 2)
+                    {
+                        this.pictureBox3.BeginInvoke((Action)(() =>
+                        {
+                            pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock2.png");
+                            this.pictureBox3.Invalidate();
+                        }));
+                        this.BeginInvoke((Action)(() =>
+                        {
+                            devilTimer.Start();
+                            devilTimerWatch.Start();
+                        }));
+                    }
+                    else
+                    {
+                        this.pictureBox3.BeginInvoke((Action)(() =>
+                        {
+                            pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock3.png");
+                            this.pictureBox3.Invalidate();
+                        }));
+                        this.BeginInvoke((Action)(() =>
+                        {
+                            devilTimer.Start();
+                            devilTimerWatch.Start();
+                        }));
+                    }
 
-            //    }
-            //    if (a[a.Count - 1] > 0 && d[d.Count-1]==0)
-            //    else if (a[a.Count - 1] == 1)
-            //    {
+                }
+                else if (a[a.Count-1] == 1)
+                {
+                    this.pictureBox2.BeginInvoke((Action)(() =>
+                    {
+                        pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock1.png");
+                        this.pictureBox2.Invalidate();
+                    }));
+                    this.BeginInvoke((Action)(() =>
+                    {
+                        angelTimer.Start();
+                        angelTimerWatch.Start();
+                    }));
+                    if (d[d.Count - 1] == 0)
+                    {
+                        this.pictureBox3.BeginInvoke((Action)(() =>
+                        {
+                            pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock.png");
+                            this.pictureBox3.Invalidate();
+                        }));
+                        this.BeginInvoke((Action)(() =>
+                        {
+                            devilTimer.Stop();
+                            devilTimerWatch.Stop();
+                        }));
+                    }
+                    else if (d[d.Count - 1] == 1)
+                    {
+                        this.pictureBox3.BeginInvoke((Action)(() =>
+                        {
+                            pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock1.png");
+                            this.pictureBox3.Invalidate();
+                        }));
+                        this.BeginInvoke((Action)(() =>
+                        {
+                            devilTimer.Start();
+                            devilTimerWatch.Start();
+                        }));
+                    }
+                    else if (d[d.Count - 1] == 2)
+                    {
+                        this.pictureBox3.BeginInvoke((Action)(() =>
+                        {
+                            pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock2.png");
+                            this.pictureBox3.Invalidate();
+                        }));
+                        this.BeginInvoke((Action)(() =>
+                        {
+                            devilTimer.Start();
+                            devilTimerWatch.Start();
+                        }));
+                    }
+                    else
+                    {
+                        this.pictureBox3.BeginInvoke((Action)(() =>
+                        {
+                            pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock3.png");
+                            this.pictureBox3.Invalidate();
+                        }));
+                        this.BeginInvoke((Action)(() =>
+                        {
+                            devilTimer.Start();
+                            devilTimerWatch.Start();
+                        }));
+                    }
+                }
+                else if (a[a.Count-1] == 2)
+                {
+                    this.pictureBox2.BeginInvoke((Action)(() =>
+                    {
+                        pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock2.png");
+                        this.pictureBox2.Invalidate();
+                    }));
+                    this.BeginInvoke((Action)(() =>
+                    {
+                        angelTimer.Start();
+                        angelTimerWatch.Start();
+                    }));
+                    if (d[d.Count - 1] == 0)
+                    {
+                        this.pictureBox3.BeginInvoke((Action)(() =>
+                        {
+                            pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock.png");
+                            this.pictureBox3.Invalidate();
+                        }));
+                        this.BeginInvoke((Action)(() =>
+                        {
+                            devilTimer.Stop();
+                            devilTimerWatch.Stop();
+                        }));
+                    }
+                    else if (d[d.Count - 1] == 1)
+                    {
+                        this.pictureBox3.BeginInvoke((Action)(() =>
+                        {
+                            pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock1.png");
+                            this.pictureBox3.Invalidate();
+                        }));
+                        this.BeginInvoke((Action)(() =>
+                        {
+                            devilTimer.Start();
+                            devilTimerWatch.Start();
+                        }));
+                    }
+                    else if (d[d.Count - 1] == 2)
+                    {
+                        this.pictureBox3.BeginInvoke((Action)(() =>
+                        {
+                            pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock2.png");
+                            this.pictureBox3.Invalidate();
+                        }));
+                        this.BeginInvoke((Action)(() =>
+                        {
+                            devilTimer.Start();
+                            devilTimerWatch.Start();
+                        }));
+                    }
+                    else
+                    {
+                        this.pictureBox3.BeginInvoke((Action)(() =>
+                        {
+                            pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock3.png");
+                            this.pictureBox3.Invalidate();
+                        }));
+                        this.BeginInvoke((Action)(() =>
+                        {
+                            devilTimer.Start();
+                            devilTimerWatch.Start();
+                        }));
+                    }
+                }
+                else
+                {
+                    this.pictureBox2.BeginInvoke((Action)(() =>
+                    {
+                        pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock3.png");
+                        this.pictureBox2.Invalidate();
+                    }));
+                    this.BeginInvoke((Action)(() =>
+                    {
+                        angelTimer.Start();
+                        angelTimerWatch.Start();
+                    }));
+                    if (d[d.Count - 1] == 0)
+                    {
+                        this.pictureBox3.BeginInvoke((Action)(() =>
+                        {
+                            pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock.png");
+                            this.pictureBox3.Invalidate();
+                        }));
+                        this.BeginInvoke((Action)(() =>
+                        {
+                            devilTimer.Stop();
+                            devilTimerWatch.Stop();
+                        }));
+                    }
+                    else if (d[d.Count - 1] == 1)
+                    {
+                        this.pictureBox3.BeginInvoke((Action)(() =>
+                        {
+                            pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock1.png");
+                            this.pictureBox3.Invalidate();
+                        }));
+                        this.BeginInvoke((Action)(() =>
+                        {
+                            devilTimer.Start();
+                            devilTimerWatch.Start();
+                        }));
+                    }
+                    else if (d[d.Count - 1] == 2)
+                    {
+                        this.pictureBox3.BeginInvoke((Action)(() =>
+                        {
+                            pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock2.png");
+                            this.pictureBox3.Invalidate();
+                        }));
+                        this.BeginInvoke((Action)(() =>
+                        {
+                            devilTimer.Start();
+                            devilTimerWatch.Start();
+                        }));
+                    }
+                    else
+                    {
+                        this.pictureBox3.BeginInvoke((Action)(() =>
+                        {
+                            pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock3.png");
+                            this.pictureBox3.Invalidate();
+                        }));
+                        this.BeginInvoke((Action)(() =>
+                        {
+                            devilTimer.Start();
+                            devilTimerWatch.Start();
+                        }));
+                    }
+                }
+            }
 
-            //    }
-            //    else if (a[a.Count - 1] == 2)
-            //    {
 
-            //    }
-            //    else
-            //    {
+            if (!angelShow)
+            {
+                if (a[a.Count-1] > 0)
+                {
+                    this.pictureBox2.BeginInvoke((Action)(() =>
+                    {
+                        this.pictureBox2.Visible = true;
+                        this.pictureBox2.Invalidate();
+                    }));
 
-            //    }
+                    this.BeginInvoke((Action)(() =>
+                    {
+                        angelRiseTimer.Start();
+                        angelRiseWatch.Start();
+                    }));
 
-            //}
+                    angelShow = true;
+                }
+            }
 
+            if (!devilShow)
+            {
+                if (d[d.Count-1] > 0)
+                {
+                    this.pictureBox3.BeginInvoke((Action)(() =>
+                    {
+                        System.Diagnostics.Debug.WriteLine("devil appear");
+                        this.pictureBox3.Visible = true;
+                        this.pictureBox3.Invalidate();
+                    }));
+
+                    this.BeginInvoke((Action)(() =>
+                    {
+                        devilRiseTimer.Start();
+                        devilRiseWatch.Start();
+                    }));
+
+                    devilShow = true;
+                }
+            }
+        }
+
+        private void devilRiseTimer_Tick(object sender, EventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("devil rise timer...");
+            if (devilRiseWatch.ElapsedMilliseconds >= 10000)
+            {
+                devilRiseTimer.Stop();
+                devilRiseWatch.Stop();
+                label1.Visible = false;
+                label1.Invalidate();
+                pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock1.png");
+                pictureBox3.Invalidate();
+                devilTimer = new Timer();
+                devilTimer.Tick += devilTimer_Tick;
+                devilTimer.Interval = 1000;
+                devilTimerWatch = new Stopwatch();
+                devilTimer.Start();
+                devilTimerWatch.Start();
+                return;
+            }
+
+            devilPicture1 = !devilPicture1;
+            if (devilPicture1)
+            {
+                pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock.png");
+            }
+            else
+            {
+                pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock_.png");
+            }
+
+            this.pictureBox3.BeginInvoke((Action)(() =>
+            {
+                pictureBox3.Location = new System.Drawing.Point(pictureBox3.Location.X, pictureBox3.Location.Y - 12);
+                pictureBox3.Invalidate();
+            }));
+        }
+
+        private void angelRiseTimer_Tick(object sender, EventArgs e)
+        {
+            if (angelRiseWatch.ElapsedMilliseconds >= 10000)
+            {
+                angelRiseTimer.Stop();
+                angelRiseWatch.Stop();
+                label2.Visible = false;
+                label2.Invalidate();
+                pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock1.png");
+                pictureBox2.Invalidate();
+                angelTimer = new Timer();
+                angelTimer.Tick += angelTimer_Tick;
+                angelTimer.Interval = 1000;
+                angelTimerWatch = new Stopwatch();
+                angelTimer.Start();
+                angelTimerWatch.Start();
+                return;
+            }
+            angelPicture1 = !angelPicture1;
+            if (angelPicture1)
+            {
+                pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock.png");
+            }
+            else
+            {
+                pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock_.png");
+            }
+
+            this.pictureBox2.BeginInvoke((Action)(() =>
+            {
+                pictureBox2.Location = new System.Drawing.Point(pictureBox2.Location.X, pictureBox2.Location.Y - 12);
+                pictureBox2.Invalidate();
+            }));
         }
 
         protected override void OnLoad(EventArgs e)
@@ -267,62 +778,62 @@
                     int jointX = jointPoints[jointType].X;
                     int jointY = jointPoints[jointType].Y;
                     //System.Diagnostics.Debug.WriteLine("joint: " + jointType + " x: " + jointX + " y: " + jointY);
-                       if (skeleton.Feedback == ProjectionMappingSample.ProjectionFeedback.LegCrossed || skeleton.Feedback == ProjectionMappingSample.ProjectionFeedback.LegStationary)
+                    if (skeleton.Feedback == ProjectionMappingSample.ProjectionFeedback.LegCrossed || skeleton.Feedback == ProjectionMappingSample.ProjectionFeedback.LegStationary)
+                    {
+                        if (jointType == JointType.Head)
                         {
-                            if (jointType == JointType.Head)
-                            {
-                            }
-                            else if (leftLegRegion.Contains(jointType) || rightLegRegion.Contains(jointType))
-                            {
-                                g.FillEllipse(this.dangerousJointBrush, jointX, jointY, jointThickness, jointThickness);
-                            }
-                            else
-                            {
-                                g.FillEllipse(this.trackedJointBrush, jointX, jointY, jointThickness, jointThickness);
-                            }
                         }
-                        else if (skeleton.Feedback == ProjectionMappingSample.ProjectionFeedback.Slouch|| skeleton.Feedback == ProjectionMappingSample.ProjectionFeedback.BodyStationary)
+                        else if (leftLegRegion.Contains(jointType) || rightLegRegion.Contains(jointType))
                         {
-                            if (jointType == JointType.Head)
-                            {
-                            }
-                            else if (trunkRegion.Contains(jointType))
-                            {
-                                g.FillEllipse(this.dangerousJointBrush, jointX, jointY, jointThickness, jointThickness);
-                            }
-                            else
-                            {
-                                g.FillEllipse(this.trackedJointBrush, jointX, jointY, jointThickness, jointThickness);
-                            }
-                        }
-                        else if (skeleton.Feedback == ProjectionMappingSample.ProjectionFeedback.ArmStationary)
-                        {
-                            if (jointType == JointType.Head)
-                            {
-                            }
-                            else if (rightArmRegion.Contains(jointType) || leftArmRegion.Contains(jointType))
-                            {
-                                g.FillEllipse(this.dangerousJointBrush, jointX, jointY, jointThickness, jointThickness);
-                            }
-                            else
-                            {
-                                g.FillEllipse(this.trackedJointBrush, jointX, jointY, jointThickness, jointThickness);
-                            }
+                            g.FillEllipse(this.dangerousJointBrush, jointX, jointY, jointThickness, jointThickness);
                         }
                         else
                         {
-                            if (jointType == JointType.Head)
-                            {
-                            }
-                           if (jointType == JointType.Neck)
-                            {
-                                g.FillEllipse(this.dangerousJointBrush, jointX, jointY, jointThickness, jointThickness);
-                            }
-                            else
-                            {
-                                g.FillEllipse(this.trackedJointBrush, jointX, jointY, jointThickness, jointThickness);
-                            }
-                        }       
+                            g.FillEllipse(this.trackedJointBrush, jointX, jointY, jointThickness, jointThickness);
+                        }
+                    }
+                    else if (skeleton.Feedback == ProjectionMappingSample.ProjectionFeedback.Slouch || skeleton.Feedback == ProjectionMappingSample.ProjectionFeedback.BodyStationary)
+                    {
+                        if (jointType == JointType.Head)
+                        {
+                        }
+                        else if (trunkRegion.Contains(jointType))
+                        {
+                            g.FillEllipse(this.dangerousJointBrush, jointX, jointY, jointThickness, jointThickness);
+                        }
+                        else
+                        {
+                            g.FillEllipse(this.trackedJointBrush, jointX, jointY, jointThickness, jointThickness);
+                        }
+                    }
+                    else if (skeleton.Feedback == ProjectionMappingSample.ProjectionFeedback.ArmStationary)
+                    {
+                        if (jointType == JointType.Head)
+                        {
+                        }
+                        else if (rightArmRegion.Contains(jointType) || leftArmRegion.Contains(jointType))
+                        {
+                            g.FillEllipse(this.dangerousJointBrush, jointX, jointY, jointThickness, jointThickness);
+                        }
+                        else
+                        {
+                            g.FillEllipse(this.trackedJointBrush, jointX, jointY, jointThickness, jointThickness);
+                        }
+                    }
+                    else
+                    {
+                        if (jointType == JointType.Head)
+                        {
+                        }
+                        if (jointType == JointType.Neck)
+                        {
+                            g.FillEllipse(this.dangerousJointBrush, jointX, jointY, jointThickness, jointThickness);
+                        }
+                        else
+                        {
+                            g.FillEllipse(this.trackedJointBrush, jointX, jointY, jointThickness, jointThickness);
+                        }
+                    }
                 } // joints
             } // skeletons
         }
@@ -368,8 +879,8 @@
                 }
                 else
                 {
-                //    float a = face.Location.X - body.Joints[JointType.Head].CameraSpacePoint.X;
-                //    float b = face.Location.Y - body.Joints[JointType.Head].CameraSpacePoint.Y;
+                    //    float a = face.Location.X - body.Joints[JointType.Head].CameraSpacePoint.X;
+                    //    float b = face.Location.Y - body.Joints[JointType.Head].CameraSpacePoint.Y;
 
                     Dictionary<JointType, System.Drawing.Point> jointPoints = new Dictionary<JointType, System.Drawing.Point>();
                     foreach (JointType jointType in body.Joints.Keys)
@@ -455,250 +966,14 @@
                 }
         }
 
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
-
-    }
-
-    public class ProjectorForm : Form1
-    {
-        public ProjectorForm(Factory factory, SharpDX.Direct3D11.Device device, Object renderLock, ProjectorCameraEnsemble.Projector projector)
-            : base(factory, device, renderLock)
-        {
-            this.projector = projector;
-            Text = "Projector " + projector.name;
-        }
-
-        int current_bad_user_count = 1;
-        int current_good_user_count = 1;
-        int goodUserCount;
-        int badUserCount;
-
-
-        public void On_PostureChanged(ProjectionMappingSample.ProjectionFeedback feedback)
-        {
-            //eowrkesoprk
-        }
-
-        bool devilPicture1 = true;
-        Timer devilRiseTimer;
-        Stopwatch devilRiseWatch;
-        bool angelPicture1 = true;
-        Timer angelRiseTimer;
-        Stopwatch angelRiseWatch;
-        Timer devilTimer;
-        Timer angelTimer;
-        Stopwatch angelTimerWatch;
-        Stopwatch devilTimerWatch;
-
-        public void On_ImageChanged(string type, int num)
-        {
-            switch (type)
-            {
-                case "devil":
-                    {
-                        if (num == 3)
-                        {
-                            pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock3.png");
-                            devilTimer.Start();
-                            devilTimerWatch.Start();
-                        }
-                        else if (num == 2)
-                        {
-                            pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock2.png");
-                            devilTimer.Start();
-                            devilTimerWatch.Start();
-                        }
-                        else if (num == 1)
-                        {
-                            pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock1.png");
-                            devilTimer.Start();
-                            devilTimerWatch.Start();
-                        }
-                        else
-                        {
-                            pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock.png");
-                            devilTimer.Stop();
-                            devilTimerWatch.Stop();
-                        }
-                        current_bad_user_count = num;
-                        if (current_bad_user_count > badUserCount)
-                        {
-                            int pb3Height = pictureBox3.Size.Height;
-                            int pb3Width = pictureBox3.Size.Width;
-                            pictureBox3.Height = (int)(pb3Height * 1.15);
-                            pictureBox3.Width = (int)(pb3Width * 1.15);
-
-                        }
-                        else if (current_bad_user_count < badUserCount)
-                        {
-                            pictureBox3.Height = (int)(pictureBox3.Size.Height / 1.15);
-                            pictureBox3.Width = (int)(pictureBox3.Size.Width / 1.15);
-
-                        }
-                        System.Diagnostics.Debug.WriteLine(current_bad_user_count);
-                        break;
-                    }
-                case "angel":
-                    {
-                        if (num == 3)
-                        {
-                            pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock3.png");
-                            angelTimer.Start();
-                            angelTimerWatch.Start();
-                        }
-                        else if (num == 2)
-                        {
-                            pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock2.png");
-                            angelTimer.Start();
-                            angelTimerWatch.Start();
-                        }
-                        else if (num == 1)
-                        {
-                            pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock1.png");
-                            angelTimer.Start();
-                            angelTimerWatch.Start();
-                        }
-                        else
-                        {
-                            pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock.png");
-                            angelTimer.Stop();
-                            angelTimerWatch.Stop();
-                        }
-                        current_good_user_count = num;
-                        if ((pictureBox2.Image.Equals(Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock1_flower.png"))
-                            || pictureBox2.Image.Equals(Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock2_flower.png"))
-                            || pictureBox2.Image.Equals(Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock3_flower.png")))
-                            && (current_good_user_count < goodUserCount))
-                        {
-                            if (current_good_user_count == 2)
-                            {
-                                pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock2_witheredFlower.png");
-                            }
-                            else if (current_good_user_count == 1)
-                            {
-                                pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock1_witheredFlower.png");
-                            }
-                            else
-                            {
-                                pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock_witheredFlower.png");
-                            }
-                        }
-                        goodUserCount = current_good_user_count;
-                        break;
-                    }
-                default:
-                    break;
-            }
-        }
-
         const int Devil_Picture_Box = 1;
         const int Angel_Picture_Box = 2;
+        int currentGoodToken = 0;
+        int currentBadToken = 0;
+        int currentWitheredFlower = 0;
 
-
-        public void On_VisibilityChanged(bool b, int id)
-        {
-            switch (id)
-            {
-                case Devil_Picture_Box:
-                    {
-                        this.pictureBox3.Visible = b;
-                        this.pictureBox3.Invalidate();
-                        devilRiseTimer = new Timer();
-                        devilRiseTimer.Tick += devilRiseTimer_Tick;
-                        devilRiseTimer.Interval = 170; // milliseconds
-                        devilRiseWatch = new Stopwatch();
-                        devilRiseTimer.Start();
-                        devilRiseWatch.Start();
-                        break;
-                    }
-                case Angel_Picture_Box:
-                    {
-                        this.pictureBox2.Visible = b;
-                        this.pictureBox2.Invalidate();
-                        angelRiseTimer = new Timer();
-                        angelRiseTimer.Tick += angelRiseTimer_Tick;
-                        angelRiseTimer.Interval = 170; // milliseconds
-                        angelRiseWatch = new Stopwatch();
-                        angelRiseTimer.Start();
-                        angelRiseWatch.Start();
-                        break;
-                    }
-                default:
-                    break;
-            }
-        }
-
-        private void devilRiseTimer_Tick(object sender, EventArgs e)
-        {
-            if (devilRiseWatch.ElapsedMilliseconds >= 10000)
-            {
-                devilRiseTimer.Stop();
-                devilRiseWatch.Stop();
-                label1.Visible = true;
-                label1.Refresh();
-                pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock1.png");
-                pictureBox3.Refresh();
-                devilTimer = new Timer();
-                devilTimer.Tick += devilTimer_Tick;
-                devilTimer.Interval = 1000;
-                devilTimerWatch = new Stopwatch();
-                devilTimer.Start();
-                devilTimerWatch.Start();
-                return;
-            }
-
-            devilPicture1 = !devilPicture1;
-            if (devilPicture1)
-            {
-                pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock.png");
-            }
-            else
-            {
-                pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock_.png");
-            }
-            pictureBox3.Location = new System.Drawing.Point(pictureBox3.Location.X, pictureBox3.Location.Y - 12);
-        }
-
-        private void angelRiseTimer_Tick(object sender, EventArgs e)
-        {
-            if (angelRiseWatch.ElapsedMilliseconds >= 10000)
-            {
-                angelRiseTimer.Stop();
-                angelRiseWatch.Stop();
-                label2.Visible = true;
-                label2.Refresh();
-                pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock1.png");
-                pictureBox3.Refresh();
-                angelTimer = new Timer();
-                angelTimer.Tick += angelTimer_Tick;
-                angelTimer.Interval = 1000;
-                angelTimerWatch = new Stopwatch();
-                angelTimer.Start();
-                angelTimerWatch.Start();
-                return;
-            }
-            angelPicture1 = !angelPicture1;
-            if (angelPicture1)
-            {
-                pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock.png");
-            }
-            else
-            {
-                pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock_.png");
-            }
-            pictureBox2.Location = new System.Drawing.Point(pictureBox2.Location.X, pictureBox2.Location.Y - 12);
-        }
-
-
+        int aChangedTime = 0;
+        bool[] flowerArray = new bool[5];
         private void angelTimer_Tick(object sender, EventArgs e)
         {
             char[] times = label2.Text.ToCharArray();
@@ -706,21 +981,8 @@
             int tens_sec = Convert.ToInt32(new string(times[3], 1));
             int digit_min = Convert.ToInt32(new string(times[1], 1));
             int tens_min = Convert.ToInt32(new string(times[0], 1));
-            if (current_bad_user_count == 0)
-            {
-                if (current_good_user_count == 1)
-                {
-                    pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock1_flower.png");
-                }
-                else if (current_good_user_count == 2)
-                {
-                    pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock2_flower.png");
-                }
-                else if (current_good_user_count == 3)
-                {
-                    pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock3_flower.png");
-                }
-            }
+            bool tensSecChanged = false;
+
             if (current_good_user_count == 1)
             {
                 if (digit_sec < 9)
@@ -733,10 +995,12 @@
                     if (tens_sec < 5)
                     {
                         tens_sec++;
+                        tensSecChanged = true;
                     }
                     else
                     {
                         tens_sec = 0;
+                        tensSecChanged = true;
                         if (digit_min < 9)
                         {
                             digit_min++;
@@ -761,10 +1025,12 @@
                     if (tens_sec < 5)
                     {
                         tens_sec++;
+                        tensSecChanged = true;
                     }
                     else
                     {
                         tens_sec = 0;
+                        tensSecChanged = true;
                         if (digit_min < 9)
                         {
                             digit_min++;
@@ -790,10 +1056,12 @@
                     if (tens_sec < 5)
                     {
                         tens_sec++;
+                        tensSecChanged = true;
                     }
                     else
                     {
                         tens_sec = 0;
+                        tensSecChanged = true;
                         if (digit_min < 9)
                         {
                             digit_min++;
@@ -806,6 +1074,106 @@
                     }
                 }
             }
+
+            if (tensSecChanged)
+            {
+                //aChangedTime++;
+                if (currentBadToken > 0)
+                {
+                    if(currentBadToken==5)
+                    {
+                        bomb5.Visible = false;
+                        bomb5.Refresh();
+                    }
+                    else if (currentBadToken == 4)
+                    {
+                        bomb1.Visible = false;
+                        bomb1.Refresh();
+                    }
+                    else if (currentBadToken == 3)
+                    {
+                        bomb4.Visible = false;
+                        bomb4.Refresh();
+                    }
+                    else if (currentBadToken == 2)
+                    {
+                        bomb2.Visible = false;
+                        bomb2.Refresh();
+                    }
+                    else
+                    {
+                        bomb3.Visible = false;
+                        bomb3.Refresh();
+                        
+                    }
+                    currentBadToken--;
+                }
+                else if (currentWitheredFlower > 0)
+                {
+                    if (currentWitheredFlower == 5)
+                    {
+                        flower1.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\good_posture_sign.png");
+                        flower1.Invalidate();
+                    }
+                    else if (currentWitheredFlower == 4)
+                    {
+                        flower2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\good_posture_sign.png");
+                        flower2.Invalidate();
+                    }
+                    else if (currentWitheredFlower == 3)
+                    {
+                        flower3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\good_posture_sign.png");
+                        flower3.Invalidate();
+                    }
+                    else if (currentWitheredFlower == 2)
+                    {
+                        flower4.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\good_posture_sign.png");
+                        flower4.Invalidate();
+                    }
+                    else
+                    {
+                        flower5.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\good_posture_sign.png");
+                        flower5.Invalidate();
+                    }
+                    currentWitheredFlower--;
+                }
+                else if (currentGoodToken <5)
+                {
+                    if (currentGoodToken == 4)
+                    {
+                        //if (this.flower1.Image != Image.FromFile())
+                        this.flower1.Visible = true;
+                        this.flower1.Invalidate();
+                        //flowerArray[0] = true;
+                    }
+                    else if (currentGoodToken == 3)
+                    {
+                        this.flower2.Visible = true;
+                        this.flower2.Invalidate();
+                        //flowerArray[4] = true;
+                    }
+                    else if (currentGoodToken == 2)
+                    {
+                        this.flower3.Visible = true;
+                        this.flower3.Invalidate();
+                        //flowerArray[1] = true;
+                    }
+                    else if (currentGoodToken == 1)
+                    {
+                        this.flower4.Visible = true;
+                        this.flower4.Invalidate();
+                        //flowerArray[3] = true;
+                    }
+                    else
+                    {
+                        this.flower5.Visible = true;
+                        this.flower5.Invalidate();
+                        //flowerArray[2] = true;
+                    }
+                    currentGoodToken++;
+                }               
+            }
+
             //System.Diagnostics.Debug.WriteLine("after if");
             string new_time = String.Format("{0}{1}:{2}{3}", tens_min, digit_min, tens_sec, digit_sec);
             //System.Diagnostics.Debug.WriteLine(new_time);
@@ -814,6 +1182,8 @@
             //System.Diagnostics.Debug.WriteLine("new: " + label1.Text);
         }
 
+        int dChangedTime = 0;
+        bool[] bombArray = new bool[5];
         private void devilTimer_Tick(object sender, EventArgs e)
         {
             int digit_sec;
@@ -821,11 +1191,11 @@
             int digit_min;
             int tens_min;
             char[] times = label1.Text.ToCharArray();
-            badUserCount = current_bad_user_count;
             digit_sec = Convert.ToInt32(new string(times[4], 1));
             tens_sec = Convert.ToInt32(new string(times[3], 1));
             digit_min = Convert.ToInt32(new string(times[1], 1));
             tens_min = Convert.ToInt32(new string(times[0], 1));
+            bool tensSecChanged = false;
             if (current_bad_user_count == 1)
             {
                 System.Diagnostics.Debug.WriteLine(digit_sec);
@@ -839,10 +1209,12 @@
                     if (tens_sec < 5)
                     {
                         tens_sec++;
+                        tensSecChanged = true;
                     }
                     else
                     {
                         tens_sec = 0;
+                        tensSecChanged = true;
                         if (digit_min < 9)
                         {
                             digit_min++;
@@ -867,10 +1239,12 @@
                     if (tens_sec < 5)
                     {
                         tens_sec++;
+                        tensSecChanged = true;
                     }
                     else
                     {
                         tens_sec = 0;
+                        tensSecChanged = true;
                         if (digit_min < 9)
                         {
                             digit_min++;
@@ -896,10 +1270,12 @@
                     if (tens_sec < 5)
                     {
                         tens_sec++;
+                        tensSecChanged = true;
                     }
                     else
                     {
                         tens_sec = 0;
+                        tensSecChanged = true;
                         if (digit_min < 9)
                         {
                             digit_min++;
@@ -918,8 +1294,224 @@
             label1.Text = new_time;
             label1.Invalidate();
             //System.Diagnostics.Debug.WriteLine("new: " + label1.Text);
+            if (tensSecChanged)
+            {
+
+                if (currentGoodToken > 0 && currentGoodToken<=5)
+                {
+                    if (currentGoodToken == 5)
+                    {
+                        //if (this.flower1.Image != Image.FromFile())
+                        flower1.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\good_posture_sign_withered.png");
+                        flower1.Invalidate();
+                        //flowerArray[0] = true;
+                    }
+                    else if (currentGoodToken == 4)
+                    {
+                        flower2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\good_posture_sign_withered.png");
+                        flower2.Invalidate();
+                        //flowerArray[4] = true;
+                    }
+                    else if (currentGoodToken == 3)
+                    {
+                        flower3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\good_posture_sign_withered.png");
+                        flower3.Invalidate();
+                        //flowerArray[1] = true;
+                    }
+                    else if (currentGoodToken == 2)
+                    {
+                        flower4.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\good_posture_sign_withered.png");
+                        flower4.Invalidate();
+                        //flowerArray[3] = true;
+                    }
+                    else
+                    {
+                        flower5.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\good_posture_sign_withered.png");
+                        flower5.Invalidate();
+                        //flowerArray[2] = true;
+                    }
+                    currentGoodToken--;
+                    currentWitheredFlower++;
+                }
+                else if(currentBadToken<5)
+                {
+                    if (currentBadToken == 0)
+                    {
+                        this.bomb5.Visible = true;
+                        this.bomb5.Invalidate();
+                    }
+                    else if (currentBadToken == 1)
+                    {
+                        this.bomb4.Visible = true;
+                        this.bomb4.Invalidate();
+                    }
+                    else if (currentBadToken == 2)
+                    {
+                        this.bomb3.Visible = true;
+                        this.bomb3.Invalidate();
+                    }
+                    else if (currentBadToken == 3)
+                    {
+                        this.bomb2.Visible = true;
+                        this.bomb2.Invalidate();
+                    }
+                    else
+                    {
+                        this.bomb1.Visible = true;
+                        this.bomb1.Invalidate();
+                    }
+                    currentBadToken++;
+                }
+            }
         }
 
+    }
+
+    public class ProjectorForm : Form1
+    {
+        public ProjectorForm(Factory factory, SharpDX.Direct3D11.Device device, Object renderLock, ProjectorCameraEnsemble.Projector projector)
+            : base(factory, device, renderLock)
+        {
+            this.projector = projector;
+            Text = "Projector " + projector.name;
+        }
+
+        //public void On_ImageChanged(string type, int num)
+        //{
+        //    switch (type)
+        //    {
+        //        case "devil":
+        //            {
+        //                if (num == 3)
+        //                {
+        //                    pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock3.png");
+        //                    devilTimer.Start();
+        //                    devilTimerWatch.Start();
+        //                }
+        //                else if (num == 2)
+        //                {
+        //                    pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock2.png");
+        //                    devilTimer.Start();
+        //                    devilTimerWatch.Start();
+        //                }
+        //                else if (num == 1)
+        //                {
+        //                    pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock1.png");
+        //                    devilTimer.Start();
+        //                    devilTimerWatch.Start();
+        //                }
+        //                else
+        //                {
+        //                    pictureBox3.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\devilClock.png");
+        //                    devilTimer.Stop();
+        //                    devilTimerWatch.Stop();
+        //                }
+        //                current_bad_user_count = num;
+        //                if (current_bad_user_count > badUserCount)
+        //                {
+        //                    int pb3Height = pictureBox3.Size.Height;
+        //                    int pb3Width = pictureBox3.Size.Width;
+        //                    pictureBox3.Height = (int)(pb3Height * 1.15);
+        //                    pictureBox3.Width = (int)(pb3Width * 1.15);
+
+        //                }
+        //                else if (current_bad_user_count < badUserCount)
+        //                {
+        //                    pictureBox3.Height = (int)(pictureBox3.Size.Height / 1.15);
+        //                    pictureBox3.Width = (int)(pictureBox3.Size.Width / 1.15);
+
+        //                }
+        //                System.Diagnostics.Debug.WriteLine(current_bad_user_count);
+        //                break;
+        //            }
+        //        case "angel":
+        //            {
+        //                if (num == 3)
+        //                {
+        //                    pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock3.png");
+        //                    angelTimer.Start();
+        //                    angelTimerWatch.Start();
+        //                }
+        //                else if (num == 2)
+        //                {
+        //                    pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock2.png");
+        //                    angelTimer.Start();
+        //                    angelTimerWatch.Start();
+        //                }
+        //                else if (num == 1)
+        //                {
+        //                    pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock1.png");
+        //                    angelTimer.Start();
+        //                    angelTimerWatch.Start();
+        //                }
+        //                else
+        //                {
+        //                    pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock.png");
+        //                    angelTimer.Stop();
+        //                    angelTimerWatch.Stop();
+        //                }
+        //                current_good_user_count = num;
+        //                if ((pictureBox2.Image.Equals(Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock1_flower.png"))
+        //                    || pictureBox2.Image.Equals(Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock2_flower.png"))
+        //                    || pictureBox2.Image.Equals(Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock3_flower.png")))
+        //                    && (current_good_user_count < goodUserCount))
+        //                {
+        //                    if (current_good_user_count == 2)
+        //                    {
+        //                        pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock2_witheredFlower.png");
+        //                    }
+        //                    else if (current_good_user_count == 1)
+        //                    {
+        //                        pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock1_witheredFlower.png");
+        //                    }
+        //                    else
+        //                    {
+        //                        pictureBox2.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\angelClock_witheredFlower.png");
+        //                    }
+        //                }
+        //                goodUserCount = current_good_user_count;
+        //                break;
+        //            }
+        //        default:
+        //            break;
+        //    }
+        //}
+
+
+
+
+        //public void On_VisibilityChanged(bool b, int id)
+        //{
+        //switch (id)
+        //{
+        //    case Devil_Picture_Box:
+        //        {
+        //            this.pictureBox3.Visible = b;
+        //            this.pictureBox3.Invalidate();
+        //            devilRiseTimer = new Timer();
+        //            devilRiseTimer.Tick += devilRiseTimer_Tick;
+        //            devilRiseTimer.Interval = 170; // milliseconds
+        //            devilRiseWatch = new Stopwatch();
+        //            devilRiseTimer.Start();
+        //            devilRiseWatch.Start();
+        //            break;
+        //        }
+        //    case Angel_Picture_Box:
+        //        {
+        //            this.pictureBox2.Visible = b;
+        //            this.pictureBox2.Invalidate();
+        //            angelRiseTimer = new Timer();
+        //            angelRiseTimer.Tick += angelRiseTimer_Tick;
+        //            angelRiseTimer.Interval = 170; // milliseconds
+        //            angelRiseWatch = new Stopwatch();
+        //            angelRiseTimer.Start();
+        //            angelRiseWatch.Start();
+        //            break;
+        //        }
+        //    default:
+        //        break;
+        //}
+        //}
 
         public bool FullScreen
         {

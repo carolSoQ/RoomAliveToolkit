@@ -133,6 +133,8 @@ namespace RoomAliveToolkit
         private List<JointType> legRegion = new List<JointType>() { JointType.KneeLeft, JointType.HipLeft, JointType.AnkleLeft, JointType.FootLeft, JointType.KneeRight, JointType.HipRight, JointType.AnkleRight, JointType.FootRight };
         public List<int> goodPostureUserRecord = new List<int>();
         public List<int> badPostureUserRecord = new List<int>();
+
+
         private Kinect2SimpleServer.Kinect2SimpleServer kinectServer;
 
         [STAThread]
@@ -236,8 +238,8 @@ namespace RoomAliveToolkit
             foreach (ProjectorForm form in this.projectorForms)
             {
                 MainForm mainForm = userViewForm as MainForm;
-                mainForm.VisibilityChanged += form.On_VisibilityChanged;
-                mainForm.ImageChanged += form.On_ImageChanged;
+                //mainForm.VisibilityChanged += form.On_VisibilityChanged;
+                //mainForm.ImageChanged += form.On_ImageChanged;
                 this.PFeedbackChanged += form.On_FeedbackChanged;
                 this.ClockChanged += form.On_ClockedChanged;
                 //this.kinectServer.BodyFrameArrived += form.On_BodyFrameArrived;
@@ -263,7 +265,7 @@ namespace RoomAliveToolkit
 
             new System.Threading.Thread(RenderLoop).Start();
         }
-
+        int bodyFrameCount = 0;
         private void kinectServer_BodyFrameReceived(Kinect2SBodyFrame serializableBodyFrame)
         {
             if (serializableBodyFrame.Bodies.Count == 0)
@@ -378,8 +380,6 @@ namespace RoomAliveToolkit
                     int slouchCount = 0;
                     int lowHeightCount = 0;
                     int shortDistanceCount = 0;
-                    bool projectionStandard = true;
-                    bool mobileGood = true;
 
                     for (int p = postureFrameCount - 60; p < postureFrameCount; p++)
                     {
@@ -509,11 +509,14 @@ namespace RoomAliveToolkit
                     int pDuration = getPFeedbackDuration(user);
                     Tuple<ProjectionFeedback, int> pFeedbackTuple = new Tuple<ProjectionFeedback, int>(pfeedback, pDuration);
                     this.PFeedbackChanged(bodyId, body, pFeedbackTuple, headX, headY);
-                    
 
-                    int mDuration = getMFeedbackDuration(user);
-                    Tuple<MobileFeedback, int> mFeedbackTuple = new Tuple<MobileFeedback, int>(mfeedback, mDuration);
-                    this.SendPostureFeedbackToAndroid(bodyId, mFeedbackTuple);
+                    if (serializableBodyFrame.Bodies.Count == 1)
+                    {
+                        int mDuration = getMFeedbackDuration(user);
+                        Tuple<MobileFeedback, int> mFeedbackTuple = new Tuple<MobileFeedback, int>(mfeedback, mDuration);
+                        this.SendPostureFeedbackToAndroid(bodyId, mFeedbackTuple);
+                    }
+
                     if (user.ProjectionFeedbacks[user.ProjectionFeedbacks.Count - 1] == ProjectionFeedback.Standard)
                     {
                         goodPostureUser++;
@@ -522,12 +525,17 @@ namespace RoomAliveToolkit
                     {
                         badPostureUser++;
                     }
-                } // find posture feedback end
+                } 
+                // find posture feedback end
                 bodyId++;             
             } // body
-            goodPostureUserRecord.Add(goodPostureUser);
-            badPostureUserRecord.Add(badPostureUser);
-            this.ClockChanged(goodPostureUserRecord, badPostureUserRecord);
+
+            if(!(goodPostureUser==0&&badPostureUser==0))
+            {
+                goodPostureUserRecord.Add(goodPostureUser);
+                badPostureUserRecord.Add(badPostureUser);
+                this.ClockChanged(goodPostureUserRecord, badPostureUserRecord);
+            }
         }
 
         private void SendPostureFeedbackToAndroid(int bodyId, Tuple<MobileFeedback, int> mFeedbackTuple)
@@ -538,10 +546,9 @@ namespace RoomAliveToolkit
 
                 TcpClient client = new TcpClient("138.251.207.116", 8080);
                 NetworkStream clientStream = client.GetStream();
-                
+
                 byte[] bytesToSend = Encoding.ASCII.GetBytes(message);
                 clientStream.Write(bytesToSend, 0, bytesToSend.Length);
-
                 clientStream.Close();
                 client.Close();
             }
