@@ -125,9 +125,9 @@
             this.tracking_face.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.tracking_face.Image = ((System.Drawing.Image)(resources.GetObject("tracking_face.Image")));
             this.tracking_face.InitialImage = ((System.Drawing.Image)(resources.GetObject("tracking_face.InitialImage")));
-            this.tracking_face.Location = new System.Drawing.Point(329, 281);
+            this.tracking_face.Location = new System.Drawing.Point(383, 291);
             this.tracking_face.Name = "tracking_face";
-            this.tracking_face.Size = new System.Drawing.Size(100, 102);
+            this.tracking_face.Size = new System.Drawing.Size(100, 150);
             this.tracking_face.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.tracking_face.TabIndex = 7;
             this.tracking_face.TabStop = false;
@@ -140,7 +140,7 @@
             this.tracking_face2.InitialImage = ((System.Drawing.Image)(resources.GetObject("tracking_face2.InitialImage")));
             this.tracking_face2.Location = new System.Drawing.Point(277, 375);
             this.tracking_face2.Name = "tracking_face2";
-            this.tracking_face2.Size = new System.Drawing.Size(100, 102);
+            this.tracking_face2.Size = new System.Drawing.Size(100, 150);
             this.tracking_face2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.tracking_face2.TabIndex = 8;
             this.tracking_face2.TabStop = false;
@@ -151,7 +151,7 @@
             this.bomb1.BackColor = System.Drawing.Color.Black;
             this.bomb1.Image = ((System.Drawing.Image)(resources.GetObject("bomb1.Image")));
             this.bomb1.InitialImage = ((System.Drawing.Image)(resources.GetObject("bomb1.InitialImage")));
-            this.bomb1.Location = new System.Drawing.Point(-22, 72);
+            this.bomb1.Location = new System.Drawing.Point(-22, 60);
             this.bomb1.Name = "bomb1";
             this.bomb1.Size = new System.Drawing.Size(104, 78);
             this.bomb1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -177,7 +177,7 @@
             this.bomb5.BackColor = System.Drawing.Color.Black;
             this.bomb5.Image = ((System.Drawing.Image)(resources.GetObject("bomb5.Image")));
             this.bomb5.InitialImage = ((System.Drawing.Image)(resources.GetObject("bomb5.InitialImage")));
-            this.bomb5.Location = new System.Drawing.Point(-9, 386);
+            this.bomb5.Location = new System.Drawing.Point(-9, 414);
             this.bomb5.Name = "bomb5";
             this.bomb5.Size = new System.Drawing.Size(81, 79);
             this.bomb5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -190,7 +190,7 @@
             this.bomb4.BackColor = System.Drawing.Color.Black;
             this.bomb4.Image = ((System.Drawing.Image)(resources.GetObject("bomb4.Image")));
             this.bomb4.InitialImage = ((System.Drawing.Image)(resources.GetObject("bomb4.InitialImage")));
-            this.bomb4.Location = new System.Drawing.Point(-5, 308);
+            this.bomb4.Location = new System.Drawing.Point(-5, 317);
             this.bomb4.Name = "bomb4";
             this.bomb4.Size = new System.Drawing.Size(77, 84);
             this.bomb4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -318,8 +318,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
             this.ClientSize = new System.Drawing.Size(1384, 1011);
-            this.Controls.Add(this.tracking_face2);
             this.Controls.Add(this.tracking_face);
+            this.Controls.Add(this.tracking_face2);
             this.Controls.Add(this.bomb3);
             this.Controls.Add(this.bomb1);
             this.Controls.Add(this.bomb2);

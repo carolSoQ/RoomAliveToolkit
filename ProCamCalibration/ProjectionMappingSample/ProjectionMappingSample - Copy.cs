@@ -95,11 +95,7 @@ namespace RoomAliveToolkit
         //1 2 3 4 5 6 7 8
         Dictionary<ulong, User> users = new Dictionary<ulong, User>();
 
-        Dictionary<ulong, bool[]> userIsLowHeight = new Dictionary<ulong, bool[]>();
-        Dictionary<ulong, bool[]> userIsGood = new Dictionary<ulong, bool[]>();
-
         List<ulong> idList = new List<ulong>();
-        int o = 0;
         double a;
         double b;
         double c;
@@ -265,7 +261,8 @@ namespace RoomAliveToolkit
 
             new System.Threading.Thread(RenderLoop).Start();
         }
-        int bodyFrameCount = 0;
+
+        //public static int bodyId = 1;
         private void kinectServer_BodyFrameReceived(Kinect2SBodyFrame serializableBodyFrame)
         {
             if (serializableBodyFrame.Bodies.Count == 0)
@@ -292,6 +289,7 @@ namespace RoomAliveToolkit
             {
                 this.users.Remove(userId);
             }
+
             int goodPostureUser = 0;
             int badPostureUser = 0;
             int bodyId = 1;

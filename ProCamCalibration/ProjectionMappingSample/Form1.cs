@@ -886,44 +886,67 @@
             {
                 if (feedbackTuple.Item2 < 3)
                 {
-                    face.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\spot.png");
+                    face.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\spot_.png");
                 }
                 else if (feedbackTuple.Item2 >= 3 && feedbackTuple.Item2 < 5)
                 {
-                    face.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\lighteyes.png");
+                    face.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\lighteyes_.png");
 
                 }
                 else if (feedbackTuple.Item2 >= 5 && feedbackTuple.Item2 < 7)
                 {
-                    face.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\deepeyes.png");
+                    face.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\deepeyes_.png");
                 }
                 else
                 {
                     //    float a = face.Location.X - body.Joints[JointType.Head].CameraSpacePoint.X;
                     //    float b = face.Location.Y - body.Joints[JointType.Head].CameraSpacePoint.Y;
-
-                    Dictionary<JointType, System.Drawing.Point> jointPoints = new Dictionary<JointType, System.Drawing.Point>();
-                    foreach (JointType jointType in body.Joints.Keys)
+                    if(feedbackTuple.Item1 == ProjectionMappingSample.ProjectionFeedback.LegCrossed)
                     {
-                        CameraSpacePoint position = body.Joints[jointType].CameraSpacePoint;
-                        int x = (int)(495 + 530.87 * position.X);
-                        int y = (int)(533.14 - 459.46 * position.Y);
-                        jointPoints[jointType] = new System.Drawing.Point(x, y);
-                    }
-
-                    Pen drawPen = this.bodyColors[bodyId - 1];
-                    if (this.skeletons.ContainsKey(bodyId) && this.skeletons[bodyId] != null)
-                    {
-                        this.skeletons[bodyId].Feedback = feedbackTuple.Item1;
-                        this.skeletons[bodyId].Joints = body.Joints;
-                        this.skeletons[bodyId].JointPoints = jointPoints;
-                        this.skeletons[bodyId].DrawingPen = drawPen;
+                        //if (ProjectionMappingSample.bodyId==1)
+                        //{
+                        //    face.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\legCrossedSkeletonF.png");
+                        //}
+                        //else
+                        //{
+                            face.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\legCrossedSkeletonM.png");
+                        //}                       
                     }
                     else
                     {
-                        this.skeletons[bodyId] = new Skeleton(feedbackTuple.Item1, body.Joints, jointPoints, drawPen);
+                        //if (ProjectionMappingSample.bodyId == 1)
+                        //{
+                            face.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\slouchSkeletonF.png");
+                        //}
+                        //else
+                        //{
+                        //    face.Image = Image.FromFile("H:\\Documents\\RoomAliveToolkit\\ProCamCalibration\\ProjectionMappingSample\\Content\\slouchSkeletonM.png");
+                        //}
                     }
-                    this.videoPanel1.BeginInvoke((Action)(() => this.videoPanel1.Invalidate()));
+
+
+                    //Dictionary<JointType, System.Drawing.Point> jointPoints = new Dictionary<JointType, System.Drawing.Point>();
+                    //foreach (JointType jointType in body.Joints.Keys)
+                    //{
+                    //    CameraSpacePoint position = body.Joints[jointType].CameraSpacePoint;
+                    //    int x = (int)(495 + 530.87 * position.X);
+                    //    int y = (int)(533.14 - 459.46 * position.Y);
+                    //    jointPoints[jointType] = new System.Drawing.Point(x, y);
+                    //}
+
+                    //Pen drawPen = this.bodyColors[bodyId - 1];
+                    //if (this.skeletons.ContainsKey(bodyId) && this.skeletons[bodyId] != null)
+                    //{
+                    //    this.skeletons[bodyId].Feedback = feedbackTuple.Item1;
+                    //    this.skeletons[bodyId].Joints = body.Joints;
+                    //    this.skeletons[bodyId].JointPoints = jointPoints;
+                    //    this.skeletons[bodyId].DrawingPen = drawPen;
+                    //}
+                    //else
+                    //{
+                    //    this.skeletons[bodyId] = new Skeleton(feedbackTuple.Item1, body.Joints, jointPoints, drawPen);
+                    //}
+                    //this.videoPanel1.BeginInvoke((Action)(() => this.videoPanel1.Invalidate()));
                 }
             }
             else
@@ -1384,7 +1407,6 @@
                 }
             }
         }
-
     }
 
     public class ProjectorForm : Form1
